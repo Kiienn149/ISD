@@ -4,6 +4,7 @@
   const flash = require('express-flash');
   const bcrypt = require('bcrypt');
   const path = require('path');
+  
   const User = require('./models/user');
   const Order = require('./models/order'); // Đảm bảo bạn đã require đúng mô hình Order
   const settingsRoutes = require('./routes/settingsRoutes');
