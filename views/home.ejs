@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Trang quản lý hệ thống</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100vh;
+      background-color: #007bdb;
+      color: white;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .sidebar a:hover {
+      background-color: #005fa3;
+    }
+    .topbar {
+      margin-left: 200px;
+      background-color: #007bdb;
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dashboard {
+      margin-left: 200px;
+      padding: 20px;
+    }
+    .card-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card {
+      flex: 1;
+      min-width: 220px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    .card h4 {
+      margin: 0 0 8px;
+    }
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .stat-blocks {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .block {
+      flex: 1;
+      min-width: 200px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <a href="#">POS Bán Hàng</a>
+    <a href="#" id="home-link">Trang Chủ</a>
+    <a href="#" id="order-link">Tạo đơn hàng</a>
+    <a href="/products" data-link>Sản phẩm</a>
+    <a href="/customer" >Khách hàng</a>
+    <a href="#">Nhập kho</a>
+    <a href="/inventory" data-link>Tồn kho</a>
+    <a href="#">Doanh số</a>
+    <a href="#">Thu chi</a>
+    <a href="/profit" data-link>Lợi nhuận</a>
+
+
+
+    <% if (user.role === 'owner') { %>
+      <li><a href="/settings">⚙️ Thiết lập</a></li>
+    <% } %>
+  </ul>
+  </div>
+
+  <div class="topbar">
+    <div><strong>💼 QUẢN LÝ BÁN HÀNG VLXD</strong></div>
+    <p style="margin-top: 30px; font-weight: 500; color: #e2e6ea;">
+      🔐 Bạn đang đăng nhập với quyền: <strong><%= user.role %></strong>
+    </p>
+    <div class="header-bar">
+      <div class="user-dropdown">
+        <span class="user-name">🔥 Xin chào, <b><%= user.name %></b> (<%= user.role %>) ▼</span>
+       
+        <div class="dropdown-menu">
+          <a href="/account">Tài khoản</a>
+          <a href="/logout">Đăng xuất</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard" id="main-content">
+    <div class="card-group">
+      <div class="card" style="background:#a0c35a; color:white">
+        <h4>💳 Tiền bán hàng</h4>
+        <div>0</div>
+      </div>
+      <div class="card" style="background:#3498db; color:white">
+        <h4>🛒 Số đơn hàng</h4>
+        <div>0</div>
+      </div>
+      <div class="card" style="background:#e74c3c; color:white">
+        <h4>↩️ Hàng khách trả</h4>
+        <div>0</div>
+      </div>
+    </div>
+    <div class="section-title">📊 Hoạt động</div>
+    <div class="stat-blocks">
+      <div class="block">Tiền bán hàng: 0</div>
+      <div class="block">Số đơn hàng: 0</div>
+      <div class="block">Số sản phẩm: 0</div>
+      <div class="block">Khách hàng trả: 0</div>
+    </div>
+    <div class="section-title">📦 Thông tin kho</div>
+    <div class="stat-blocks">
+      <div class="block">Tồn kho: 0</div>
+      <div class="block">Hết hàng: 0</div>
+      <div class="block">Sắp hết hàng: 0</div>
+      <div class="block">Vượt định mức: 0</div>
+    </div>
+    <div class="section-title">🏷️ Thông tin sản phẩm</div>
+    <div class="stat-blocks">
+      <div class="block">Sản phẩm/Nhà SX: 6 / 36</div>
+      <div class="block">Chưa làm giá bán: 0</div>
+      <div class="block">Chưa nhập giá mua: 0</div>
+      <div class="block">Chưa phân loại: 0</div>
+    </div>
+
+    <script>
+      document.querySelectorAll('a[data-link]').forEach(link => {
+        link.addEventListener('click', async (e) => {
+          e.preventDefault();
+          const url = link.getAttribute('href');
+          const res = await fetch(url);
+          const html = await res.text();
+          document.getElementById('main-content').innerHTML = html;
+        });
+      });
+    </script>
+    
+
+  </div>
+
+
+
+  <script>
+    $('#order-link').click(function (e) {
+      e.preventDefault();
+      $.get('/partial/order', function (data) {
+        $('#main-content').html(data); // ✅ Không hide, không xài dynamic-content
+      });
+    });
+  
+    $('#home-link').click(function (e) {
+      e.preventDefault();
+      location.reload(); // ✅ Reload lại trang chủ để hiện dashboard gốc
+    });
+  
+    document.querySelectorAll('a[data-link]').forEach(link => {
+      link.addEventListener('click', async (e) => {
+        e.preventDefault();
+        const url = link.getAttribute('href');
+        const res = await fetch(url);
+        const html = await res.text();
+        document.getElementById('main-content').innerHTML = html;
+      });
+    });
+  </script>
+  
+  
+  
+</body>
+</html>

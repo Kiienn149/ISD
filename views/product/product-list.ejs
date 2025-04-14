@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh sách sản phẩm</title>
+</head>
+<body>
+  <h1>Danh sách sản phẩm</h1>
+  <form action="/products" method="GET">
+    <input type="text" name="search" placeholder="Tìm kiếm sản phẩm...">
+    <button type="submit">Tìm kiếm</button>
+  </form>
+  <table>
+    <thead>
+      <tr>
+        <th>Tên sản phẩm</th>
+        <th>Mã sản phẩm</th>
+        <th>Số lượng</th>
+        <th>Giá bán</th>
+        <th>Danh mục</th>
+        <th>Nhà sản xuất</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% products.forEach(product => { %>
+        <tr>
+          <td><%= product.name %></td>
+          <td><%= product.sku %></td>
+          <td><%= product.quantity %></td>
+          <td><%= product.price %></td>
+          <td><%= product.category %></td>
+          <td><%= product.manufacturer %></td>
+          <td>
+            <a href="/products/detail/<%= product._id %>">Xem</a>
+            <a href="/products/edit/<%= product._id %>">Sửa</a>
+            <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+              <button type="submit">Xóa</button>
+            </form>
+          </td>
+        </tr>
+      <% }); %>
+    </tbody>
+  </table>
+  <p>Số sản phẩm: <%= products.length %></p>
+  <a href="/products/create">Tạo sản phẩm mới</a>
+</body>
+</html>

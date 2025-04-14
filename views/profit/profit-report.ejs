@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Báo cáo Lợi nhuận</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Báo cáo Lợi nhuận</h1>
+    <form method="get" action="/profit">
+        <label for="startDate">Từ ngày:</label>
+        <input type="date" name="startDate" value="<%= startDate %>">
+        <label for="endDate">Đến ngày:</label>
+        <input type="date" name="endDate" value="<%= endDate %>">
+        
+        <label for="customer">Khách hàng:</label>
+        <input type="text" name="customer" value="<%= customer %>">
+        
+        <label for="paymentMethod">Phương thức thanh toán:</label>
+        <input type="text" name="paymentMethod" value="<%= paymentMethod %>">
+        
+        <label for="salesperson">Nhân viên bán hàng:</label>
+        <input type="text" name="salesperson" value="<%= salesperson %>">
+        
+        <label for="store">Cửa hàng:</label>
+        <input type="text" name="store" value="<%= store %>">
+        
+        <button type="submit">Lọc</button>
+    </form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Mã đơn hàng</th>
+                <th>Cửa hàng</th>
+                <th>Ngày bán</th>
+                <th>Phương thức thanh toán</th>
+                <th>Khách hàng</th>
+                <th>Số lượng</th>
+                <th>Chiết khấu</th>
+                <th>Doanh thu</th>
+                <th>Vốn</th>
+                <th>Lợi nhuận</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% orders.forEach(function(order) { %>
+                <tr>
+                    <td><%= order._id %></td>
+                    <td><%= order.store %></td>
+                    <td><%= order.salesDate %></td>
+                    <td><%= order.paymentMethod %></td>
+                    <td><%= order.customer %></td>
+                    <td><%= order.quantity %></td>
+                    <td><%= order.discount %></td>
+                    <td><%= order.salesRevenue %></td>
+                    <td><%= order.capital %></td>
+                    <td><%= order.profit %></td>
+                </tr>
+            <% }); %>
+        </tbody>
+    </table>
+
+    <div>
+        <p>Tổng số đơn hàng: <%= totalOrders %></p>
+        <p>Tổng số tiền chiết khấu: <%= totalDiscount %></p>
+        <p>Doanh số: <%= salesRevenue %></p>
+        <p>Vốn: <%= capital %></p>
+        <p>Lợi nhuận: <%= profit %></p>
+    </div>
+</body>
+</html>

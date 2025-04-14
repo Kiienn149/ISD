@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Danh Sách Nhà Cung Cấp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <h1>Danh sách nhà cung cấp</h1>
+  <form action="/supplier/create" method="POST">
+    <label for="supplierId">Mã NCC:</label>
+    <input type="text" name="supplierId" required><br>
+
+    <label for="name">Tên NCC:</label>
+    <input type="text" name="name" required><br>
+
+    <label for="phone">Điện thoại:</label>
+    <input type="text" name="phone" required><br>
+
+    <label for="address">Địa chỉ:</label>
+    <input type="text" name="address"><br>
+
+    <button type="submit">Thêm nhà cung cấp</button>
+  </form>
+
+  <h3>Danh sách nhà cung cấp</h3>
+  <table border="1">
+    <thead>
+      <tr>
+        <th>Mã NCC</th>
+        <th>Tên NCC</th>
+        <th>Điện thoại</th>
+        <th>Địa chỉ</th>
+        <th>Lần cuối nhập hàng</th>
+        <th>Tổng tiền hàng</th>
+        <th>Nợ</th>
+        <th>Chỉnh sửa</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (suppliers && suppliers.length > 0) { %>
+        <% suppliers.forEach(function(supplier) { %>
+          <tr>
+            <td><%= supplier.supplierId %></td>
+            <td><%= supplier.name %></td>
+            <td><%= supplier.phone %></td>
+            <td><%= supplier.address %></td>
+            <td><%= supplier.lastPurchaseDate %></td>
+            <td><%= supplier.totalPurchaseAmount %></td>
+            <td><%= supplier.outstandingDebt %></td>
+            <td><a href="/supplier/edit/<%= supplier._id %>">Chỉnh sửa</a></td>
+          </tr>
+        <% }) %>
+      <% } else { %>
+        <tr>
+          <td colspan="8">Không có dữ liệu</td>
+        </tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <p>Số nhà cung cấp: <%= suppliers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount %> | Tổng nợ: <%= totalDebt %></p>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<div class="sidebar" style="width: 220px; background: #007bff; height: 100vh; color: white;">
+  <ul style="list-style: none; padding: 0; margin: 0;">
+    <li style="padding: 15px;">
+      <a href="/home-partial" data-link style="color: white; text-decoration: none;">🏠 Trang chủ</a>
+    </li>
+
+    <% if (user.role === 'owner' || user.role === 'manager') { %>
+    <li style="padding: 15px;">
+      <a href="/products" data-link style="color: white; text-decoration: none;">📦 Sản phẩm</a>
+    </li>
+    <% } %>
+
+    <% if (user.role === 'owner' || user.role === 'manager' || user.role === 'staff') { %>
+    <li style="padding: 15px;">
+      <a href="/order" data-link style="color: white; text-decoration: none;">📑 Đơn hàng</a>
+    </li>
+    <% } %>
+
+    <% if (user && user.role === 'owner') { %>
+    <li style="padding: 15px;">
+      <a href="/account" data-link style="color: white; text-decoration: none;">👤 Tài khoản</a>
+    </li>
+
+    <li style="padding: 15px;">
+      <a href="/settings" data-link style="color: white; text-decoration: none;">⚙️ Thiết lập</a>
+    </li>
+    <% } %>
+  </ul>
+</div>

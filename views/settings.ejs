@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý nhân viên</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/settings" class="active">Thiết lập</a>
+    <a href="#">Mẫu hóa đơn</a>
+  </div>
+
+  <div class="topbar">
+    <div>💼 QUẢN LÝ BÁN HÀNG VLXD</div>
+    <p>Xin chào, <%= user.name %> (<%= user.role %>)</p>
+  </div>
+
+  <div class="dashboard">
+    <h3>Danh sách Nhân viên</h3>
+    <a href="/settings/create" class="btn btn-primary">Tạo nhân viên</a>
+    <table>
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Mã nhân viên</th>
+          <th>Tên nhân viên</th>
+          <th>Email</th>
+          <th>Nhóm người sử dụng</th>
+          <th>Trạng thái</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% users.forEach((user, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= user._id %></td>
+            <td><%= user.name %></td>
+            <td><%= user.email %></td>
+            <td><%= user.role %></td>
+            <td><%= user.isActive ? 'Hoạt động' : 'Tạm ngừng' %></td>
+            <td>
+              <a href="/settings/edit/<%= user._id %>">Sửa</a> | 
+              <form action="/settings/delete/<%= user._id %>" method="POST" style="display:inline;">
+                <button type="submit">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+  </div>
+</body>
+</html>

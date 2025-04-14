@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa nhân viên</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/settings" class="active">Thiết lập</a>
+    <a href="#">Mẫu hóa đơn</a>
+  </div>
+
+  <div class="topbar">
+    <div>💼 QUẢN LÝ BÁN HÀNG VLXD</div>
+    <p>Xin chào, <%= user.name %> (<%= user.role %>)</p>
+  </div>
+
+  <div class="dashboard">
+    <h3>Chỉnh sửa thông tin nhân viên</h3>
+    <form action="/settings/edit/<%= user._id %>" method="POST">
+      <div>
+        <label for="name">Tên nhân viên:</label>
+        <input type="text" id="name" name="name" value="<%= user.name %>" required>
+      </div>
+
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<%= user.email %>" required>
+      </div>
+
+      <div>
+        <label for="role">Vai trò:</label>
+        <select id="role" name="role">
+          <option value="owner" <%= user.role === 'owner' ? 'selected' : '' %>>Chủ sở hữu</option>
+          <option value="manager" <%= user.role === 'manager' ? 'selected' : '' %>>Quản lý</option>
+          <option value="staff" <%= user.role === 'staff' ? 'selected' : '' %>>Nhân viên</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="isActive">Trạng thái:</label>
+        <input type="checkbox" id="isActive" name="isActive" <%= user.isActive ? 'checked' : '' %> >
+      </div>
+
+      <button type="submit">Lưu thay đổi</button>
+    </form>
+  </div>
+</body>
+</html>

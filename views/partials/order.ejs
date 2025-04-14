@@ -1,0 +1,99 @@
+<div class="main-container">
+  <!-- Thanh tiêu đề -->
+  <div class="page-title-bar">
+    <h2>📋 Danh sách đơn hàng</h2>
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="create-order-btn">Đặt hàng</button>
+      <button class="btn btn-info" id="sell-button">Bán hàng</button>
+      <button class="btn btn-success" id="export-excel">Xuất Excel</button>
+    </div>
+  </div>
+
+  <!-- Thanh tìm kiếm và bộ lọc -->
+  <div class="filter-bar">
+    <input type="text" id="order-search" placeholder="Nhập mã đơn hàng để tìm kiếm" class="input-text" />
+    <select id="order-type" class="input-select">
+      <option value="all">Tất cả</option>
+      <option value="order">Đơn hàng</option>
+      <option value="invoice">Hóa đơn bán</option>
+    </select>
+    <input type="date" id="start-date" class="input-date" />
+    <span>đến</span>
+    <input type="date" id="end-date" class="input-date" />
+    <button class="btn btn-search" id="search-button">🔍 Tìm kiếm</button>
+
+    <div class="filter-tabs">
+      <button class="btn-tab" id="week-filter">Tuần</button>
+      <button class="btn-tab" id="month-filter">Tháng</button>
+      <button class="btn-tab" id="quarter-filter">Quý</button>
+    </div>
+  </div>
+
+  <!-- Bảng hiển thị đơn hàng -->
+  <table class="order-table">
+    <thead>
+      <tr>
+        <th>Mã đơn hàng</th>
+        <th>Sản phẩm</th>
+        <th>Khách hàng</th>
+        <th>Số lượng</th>
+        <th>Giá</th>
+        <th>Tổng tiền</th>
+        <th>Trạng thái</th>
+        <th>Ngày bán</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (orders.length === 0) { %>
+        <tr>
+          <td colspan="8" class="text-center">Chưa có đơn hàng nào</td>
+        </tr>
+      <% } else { %>
+        <% orders.forEach(order => { %>
+          <tr>
+            <td><%= order._id %></td>
+            <td><%= order.product %></td>
+            <td><%= order.customer %></td>
+            <td><%= order.quantity %></td>
+            <td><%= order.price.toLocaleString('vi-VN') %> ₫</td>
+            <td><%= order.total.toLocaleString('vi-VN') %> ₫</td>
+            <td><%= order.status || 'Đang xử lý' %></td>
+            <td><%= order.date ? new Date(order.date).toLocaleDateString('vi-VN') : 'Chưa xác định' %></td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+
+  <!-- Form Thêm Đơn Hàng (Ẩn khi bắt đầu) -->
+  <div class="add-order-form" id="add-order-form" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
+    <h3>Thêm đơn hàng mới</h3>
+    <form action="/order/create" method="POST">
+      <label for="product">Sản phẩm:</label>
+      <input type="text" id="product" name="product" required><br><br>
+
+      <label for="customer">Khách hàng:</label>
+      <input type="text" id="customer" name="customer" required><br><br>
+
+      <label for="quantity">Số lượng:</label>
+      <input type="number" id="quantity" name="quantity" required><br><br>
+
+      <label for="price">Giá:</label>
+      <input type="number" id="price" name="price" required><br><br>
+
+      <button type="submit">Thêm đơn hàng</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  // Hiển thị form khi nhấn nút "Đặt hàng"
+  document.getElementById('create-order-btn').addEventListener('click', function() {
+    const form = document.getElementById('add-order-form');
+    form.style.display = form.style.display === 'none' ? 'block' : 'none'; // Ẩn/hiện form
+  });
+
+  document.getElementById('export-excel').addEventListener('click', () => {
+    alert('Chức năng xuất Excel đang phát triển!');
+  });
+</script>

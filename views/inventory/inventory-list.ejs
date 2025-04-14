@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh sách Hàng hóa trong Kho</title>
+    <style>
+        /* Styling cho bảng và các yếu tố khác */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e2f3f5;
+        }
+
+        /* Button styling */
+        .btn {
+            padding: 10px 20px;
+            background-color: #5c9fbe;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #4a8b9a;
+        }
+
+        .footer-stats {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .search-bar {
+            padding: 8px;
+            width: 250px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar:focus {
+            border-color: #5c9fbe;
+        }
+    </style>
+</head>
+<body>
+    <h1>Danh sách Hàng hóa trong Kho</h1>
+    <input type="text" class="search-bar" placeholder="Tìm kiếm sản phẩm..." />
+    <table>
+        <thead>
+            <tr>
+                <th>Mã hàng</th>
+                <th>Tên sản phẩm</th>
+                <th>Số lượng tồn</th>
+                <th>Giá trị tồn kho</th>
+                <th>Giá trị bán hàng</th>
+            </tr>
+        </thead>
+            <tbody>
+                <% inventoryItems.forEach(function(item) { %>
+                    <tr>
+                        <td><%= item.productId %></td>
+                        <td><%= item.productName %></td>
+                        <td><%= item.quantityInStock %></td>
+                        <td><%= item.stockValue %></td>
+                        <td><%= item.salesValue %></td>
+                    </tr>
+                <% }); %>
+            </tbody>
+    </table>
+
+    <div class="footer-stats">
+        <p>Số sản phẩm: <%= inventoryItems.length %> | Tổng số lượng tồn kho: <%= totalQuantity %> | Tổng giá trị tồn kho: <%= totalStockValue %> | Tổng giá trị bán hàng: <%= totalSalesValue %></p>
+    </div>
+</body>
+</html>

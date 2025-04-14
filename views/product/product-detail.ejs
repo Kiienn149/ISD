@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chi tiết sản phẩm</title>
+</head>
+<body>
+  <h1>Chi tiết sản phẩm</h1>
+  <p><strong>Tên sản phẩm:</strong> <%= product.name %></p>
+  <p><strong>Mã sản phẩm:</strong> <%= product.sku %></p>
+  <p><strong>Số lượng:</strong> <%= product.quantity %></p>
+  <p><strong>Giá bán:</strong> <%= product.price %></p>
+  <p><strong>Giá vốn:</strong> <%= product.capital %></p> <!-- Thêm giá vốn vào đây -->
+  <p><strong>Danh mục:</strong> <%= product.category %></p>
+  <p><strong>Nhà sản xuất:</strong> <%= product.manufacturer %></p>
+  <p><strong>Chi tiết:</strong> <%= product.description %></p>
+  <a href="/products">Quay lại danh sách sản phẩm</a>
+</body>
+</html>

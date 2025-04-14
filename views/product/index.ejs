@@ -1,0 +1,59 @@
+<!-- views/product/index.ejs -->
+<link rel="stylesheet" href="/css/style.css">
+
+<div class="table-container">
+  <div class="table-header">
+    <h2>📄 Danh sách sản phẩm</h2>
+    <div class="actions">
+      <a href="/products/create" class="btn btn-add">➕ Tạo sản phẩm</a>
+      <a href="#" class="btn btn-export">✅ Xuất Excel</a>
+    </div>
+  </div>
+
+  <div class="search-box">
+    <input type="text" placeholder="Nhập tên sản phẩm hoặc mã">
+    <button class="btn btn-add">🔍 Tìm kiếm</button>
+  </div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>STT</th>
+        <th>Tên sản phẩm</th>
+        <th>Mã SP</th>
+        <th>SL</th>
+        <th>Giá vốn</th>
+        <th>Giá bán</th>
+        <th>Danh mục</th>
+        <th>Nhà sản xuất</th>
+        <th>Hành động</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (products.length === 0) { %>
+        <tr>
+          <td colspan="9">Không có sản phẩm nào</td>
+        </tr>
+      <% } else { %>
+        <% products.forEach((product, index) => { %>
+          <tr>
+            <td><%= index + 1 %></td>
+            <td><%= product.name %></td>
+            <td>SP<%= product._id.toString().slice(-6) %></td>
+            <td><%= product.quantity || 0 %></td>
+            <td><%= product.costPrice || 0 %></td>
+            <td><%= product.price %></td>
+            <td><%= product.category || '-' %></td>
+            <td><%= product.manufacturer || '-' %></td>
+            <td>
+              <a href="/products/edit/<%= product._id %>">✏️</a>
+              <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+                <button onclick="return confirm('Xoá sản phẩm này?')">🗑️</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+</div>

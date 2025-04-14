@@ -1,0 +1,63 @@
+<!-- File: views/create-employee.ejs -->
+
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Tạo nhân viên mới</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/settings" class="active">Thiết lập</a>
+    <a href="#">Mẫu hóa đơn</a>
+  </div>
+
+  <div class="topbar">
+    <div>💼 QUẢN LÝ BÁN HÀNG VLXD</div>
+    <p>Xin chào, <%= user.name %> (<%= user.role %>)</p>
+  </div>
+
+  <div class="dashboard">
+    <h3>Tạo nhân viên mới</h3>
+    <form action="/settings/create" method="POST">
+      <div>
+        <label for="name">Tên nhân viên:</label>
+        <input type="text" id="name" name="name" required>
+      </div>
+
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+      </div>
+
+      <div>
+        <label for="phone">Số điện thoại:</label>
+        <input type="text" id="phone" name="phone" required>
+      </div>
+
+      <div>
+        <label for="password">Mật khẩu:</label>
+        <input type="password" id="password" name="password" required>
+      </div>
+
+      <div>
+        <label for="role">Vai trò:</label>
+        <select id="role" name="role">
+          <option value="owner">Chủ sở hữu</option>
+          <option value="manager">Quản lý</option>
+          <option value="staff">Nhân viên</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="isActive">Trạng thái:</label>
+        <input type="checkbox" id="isActive" name="isActive" <%= user.isActive ? 'checked' : '' %> >
+      </div>
+      
+
+      <button type="submit">Tạo nhân viên</button>
+    </form>
+  </div>
+</body>
+</html>

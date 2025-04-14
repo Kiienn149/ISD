@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Khách hàng và Nhà cung cấp</title>
+    <style>
+        /* Tab container */
+        .tab {
+            display: flex;
+            cursor: pointer;
+            padding: 10px;
+            background-color: #f1f1f1;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            justify-content: space-evenly;
+        }
+
+        .tab div {
+            padding: 10px;
+            background-color: #e7e7e7;
+            border-radius: 5px;
+            flex: 1;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .tab div.active {
+            background-color: #5c9fbe;
+            color: white;
+        }
+
+        /* Tab content */
+        .tab-content {
+            display: none;
+            margin-top: 20px;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        tr:hover {
+            background-color: #e2f3f5;
+        }
+
+        /* Button styling */
+        .btn {
+            padding: 10px 20px;
+            background-color: #5c9fbe;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .btn:hover {
+            background-color: #4a8b9a;
+        }
+
+        /* Search input */
+        .search-bar {
+            padding: 8px;
+            width: 250px;
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-bar:focus {
+            border-color: #5c9fbe;
+        }
+
+        /* Footer stats */
+        .footer-stats {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        /* Add Excel Button */
+        .btn-excel {
+            background-color: #28a745;
+        }
+
+        /* Modal styling */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 5px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .modal input,
+        .modal select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            background-color: #5c9fbe;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        .modal button:hover {
+            background-color: #4a8b9a;
+        }
+    </style>
+</head>
+<body>
+    <h1>Quản lý Khách hàng và Nhà cung cấp</h1>
+
+    <!-- Tab navigation -->
+    <div class="tab">
+        <div id="customers-tab" class="active">Khách hàng</div>
+        <div id="suppliers-tab">Nhà cung cấp</div>
+    </div>
+
+    <!-- Tab content for customers -->
+    <div id="customers-content" class="tab-content active">
+        <h2>Danh sách Khách hàng</h2>
+        <input type="text" class="search-bar" placeholder="Tìm kiếm khách hàng..." />
+        <button class="btn" onclick="openCustomerModal()">Tạo khách hàng</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã KH</th>
+                    <th>Tên KH</th>
+                    <th>Điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Lần cuối mua hàng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% customers.forEach(function(customer) { %>
+                    <tr>
+                        <td><%= customer.customerId %></td>
+                        <td><%= customer.name %></td>
+                        <td><%= customer.phone %></td>
+                        <td><%= customer.address %></td>
+                        <td><%= customer.lastPurchaseDate %></td>
+                        <td>
+                            <a href="/customer/edit/<%= customer._id %>">Sửa</a> | 
+                            <a href="/customer/delete/<%= customer._id %>">Xóa</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <div class="footer-stats">
+            <p>Số khách hàng: <%= customers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount %> | Tổng nợ: <%= totalDebt %></p>
+        </div>
+    </div>
+
+    <!-- Tab content for suppliers -->
+    <div id="suppliers-content" class="tab-content">
+        <h2>Danh sách Nhà cung cấp</h2>
+        <input type="text" class="search-bar" placeholder="Tìm kiếm nhà cung cấp..." />
+        <button class="btn" onclick="openSupplierModal()">Tạo nhà cung cấp</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>Mã NCC</th>
+                    <th>Tên NCC</th>
+                    <th>Điện thoại</th>
+                    <th>Địa chỉ</th>
+                    <th>Lần cuối nhập hàng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% suppliers.forEach(function(supplier) { %>
+                    <tr>
+                        <td><%= supplier.supplierId %></td>
+                        <td><%= supplier.name %></td>
+                        <td><%= supplier.phone %></td>
+                        <td><%= supplier.address %></td>
+                        <td><%= supplier.lastPurchaseDate %></td>
+                        <td>
+                            <a href="/supplier/edit/<%= supplier._id %>">Sửa</a> | 
+                            <a href="/supplier/delete/<%= supplier._id %>">Xóa</a>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+        <div class="footer-stats">
+            <p>Số nhà cung cấp: <%= suppliers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount %> | Tổng nợ: <%= totalDebt %></p>
+        </div>
+    </div>
+
+    <!-- Modal for Customer -->
+    <div id="customer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('customer-modal')">&times;</span>
+            <h2>Tạo mới khách hàng</h2>
+            <form action="/customer/create" method="POST">
+                <input type="text" name="customerId" placeholder="Mã khách hàng" required>
+                <input type="text" name="name" placeholder="Tên khách hàng" required>
+                <input type="text" name="phone" placeholder="Số điện thoại" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="address" placeholder="Địa chỉ">
+                <textarea name="note" placeholder="Ghi chú"></textarea>
+                <input type="date" name="dob" placeholder="Ngày sinh">
+                <div>
+                    <label><input type="radio" name="gender" value="male"> Nam</label>
+                    <label><input type="radio" name="gender" value="female"> Nữ</label>
+                </div>
+                <button type="submit">Lưu</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal for Supplier -->
+    <div id="supplier-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('supplier-modal')">&times;</span>
+            <h2>Tạo mới nhà cung cấp</h2>
+            <form action="/supplier/create" method="POST">
+                <input type="text" name="supplierId" placeholder="Mã nhà cung cấp" required>
+                <input type="text" name="name" placeholder="Tên nhà cung cấp" required>
+                <input type="text" name="phone" placeholder="Số điện thoại" required>
+                <input type="email" name="email" placeholder="Email" required>
+                <input type="text" name="address" placeholder="Địa chỉ">
+                <textarea name="note" placeholder="Ghi chú"></textarea>
+                <input type="date" name="dob" placeholder="Ngày sinh">
+                <button type="submit">Lưu</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Tab switching functionality
+        document.getElementById('customers-tab').addEventListener('click', function() {
+            document.getElementById('customers-tab').classList.add('active');
+            document.getElementById('suppliers-tab').classList.remove('active');
+            document.getElementById('customers-content').classList.add('active');
+            document.getElementById('suppliers-content').classList.remove('active');
+        });
+
+        document.getElementById('suppliers-tab').addEventListener('click', function() {
+            document.getElementById('suppliers-tab').classList.add('active');
+            document.getElementById('customers-tab').classList.remove('active');
+            document.getElementById('suppliers-content').classList.add('active');
+            document.getElementById('customers-content').classList.remove('active');
+        });
+
+        // Open and close modals
+        function openCustomerModal() {
+            document.getElementById('customer-modal').style.display = "block";
+        }
+
+        function openSupplierModal() {
+            document.getElementById('supplier-modal').style.display = "block";
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = "none";
+        }
+    </script>
+</body>
+</html>
