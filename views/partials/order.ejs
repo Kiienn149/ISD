@@ -1,89 +1,80 @@
 <div class="main-container">
   <!-- Thanh tiêu đề -->
   <div class="page-title-bar">
-    <h2>📋 Danh sách đơn hàng</h2>
-    <div class="action-buttons">
-      <button class="btn btn-primary" id="create-order-btn">Đặt hàng</button>
-      <button class="btn btn-info" id="sell-button">Bán hàng</button>
-      <button class="btn btn-success" id="export-excel">Xuất Excel</button>
-    </div>
-  </div>
-
-  <!-- Thanh tìm kiếm và bộ lọc -->
-  <div class="filter-bar">
-    <input type="text" id="order-search" placeholder="Nhập mã đơn hàng để tìm kiếm" class="input-text" />
-    <select id="order-type" class="input-select">
-      <option value="all">Tất cả</option>
-      <option value="order">Đơn hàng</option>
-      <option value="invoice">Hóa đơn bán</option>
-    </select>
-    <input type="date" id="start-date" class="input-date" />
-    <span>đến</span>
-    <input type="date" id="end-date" class="input-date" />
-    <button class="btn btn-search" id="search-button">🔍 Tìm kiếm</button>
-
-    <div class="filter-tabs">
-      <button class="btn-tab" id="week-filter">Tuần</button>
-      <button class="btn-tab" id="month-filter">Tháng</button>
-      <button class="btn-tab" id="quarter-filter">Quý</button>
-    </div>
-  </div>
-
-  <!-- Bảng hiển thị đơn hàng -->
-  <table class="order-table">
-    <thead>
-      <tr>
-        <th>Mã đơn hàng</th>
-        <th>Sản phẩm</th>
-        <th>Khách hàng</th>
-        <th>Số lượng</th>
-        <th>Giá</th>
-        <th>Tổng tiền</th>
-        <th>Trạng thái</th>
-        <th>Ngày bán</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (orders.length === 0) { %>
+    <h3>Danh sách đơn hàng</h3>
+    <table>
+      <thead>
         <tr>
-          <td colspan="8" class="text-center">Chưa có đơn hàng nào</td>
+          <th>Mã đơn hàng</th>
+          <th>Sản phẩm</th>
+          <th>Khách hàng</th>
+          <th>Số lượng</th>
+          <th>Giá</th>
+          <th>Tổng tiền</th>
+          <th>Trạng thái</th>
+          <th>Ngày bán</th>
         </tr>
-      <% } else { %>
-        <% orders.forEach(order => { %>
+      </thead>
+      <tbody>
+        <% if (orders.length === 0) { %>
           <tr>
-            <td><%= order._id %></td>
-            <td><%= order.product %></td>
-            <td><%= order.customer %></td>
-            <td><%= order.quantity %></td>
-            <td><%= order.price.toLocaleString('vi-VN') %> ₫</td>
-            <td><%= order.total.toLocaleString('vi-VN') %> ₫</td>
-            <td><%= order.status || 'Đang xử lý' %></td>
-            <td><%= order.date ? new Date(order.date).toLocaleDateString('vi-VN') : 'Chưa xác định' %></td>
+            <td colspan="8" class="text-center">Chưa có đơn hàng nào</td>
           </tr>
-        <% }) %>
-      <% } %>
-    </tbody>
-  </table>
+        <% } else { %>
+          <% orders.forEach(order => { %>
+            <tr>
+              <td><%= order._id %></td>
+              <td><%= order.product %></td>
+              <td><%= order.customer %></td>
+              <td><%= order.quantity %></td>
+              <td><%= order.price.toLocaleString('vi-VN') %> ₫</td>
+              <td><%= order.total.toLocaleString('vi-VN') %> ₫</td>
+              <td><%= order.status || 'Đang xử lý' %></td>
+              <td><%= order.date ? new Date(order.date).toLocaleDateString('vi-VN') : 'Chưa xác định' %></td>
+            </tr>
+          <% }) %>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
 
   <!-- Form Thêm Đơn Hàng (Ẩn khi bắt đầu) -->
   <div class="add-order-form" id="add-order-form" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <h3>Thêm đơn hàng mới</h3>
     <form action="/order/create" method="POST">
       <label for="product">Sản phẩm:</label>
-      <input type="text" id="product" name="product" required><br><br>
+      <input type="text" id="product" name="product" list="products" required>
+      <datalist id="products">
+        <!-- Dữ liệu sẽ được điền qua JavaScript -->
+      </datalist><br><br>
 
       <label for="customer">Khách hàng:</label>
-      <input type="text" id="customer" name="customer" required><br><br>
+      <input type="text" id="customer" name="customer" list="customers" required>
+      <datalist id="customers">
+        <!-- Dữ liệu sẽ được điền qua JavaScript -->
+      </datalist><br><br>
+
+      <label for="user">Nhân viên bán hàng:</label>
+      <input type="text" id="user" name="user" list="users" required>
+      <datalist id="users">
+        <!-- Dữ liệu sẽ được điền qua JavaScript -->
+      </datalist><br><br>
 
       <label for="quantity">Số lượng:</label>
       <input type="number" id="quantity" name="quantity" required><br><br>
 
       <label for="price">Giá:</label>
-      <input type="number" id="price" name="price" required><br><br>
+      <input type="number" id="price" name="price" readonly><br><br>
+
+      <label for="total">Tổng tiền:</label>
+      <input type="number" id="total" name="total" readonly><br><br>
 
       <button type="submit">Thêm đơn hàng</button>
     </form>
   </div>
+
+  <button id="create-order-btn">Đặt hàng</button>
+  <button id="export-excel">Xuất Excel</button>
 </div>
 
 <script>
@@ -93,7 +84,63 @@
     form.style.display = form.style.display === 'none' ? 'block' : 'none'; // Ẩn/hiện form
   });
 
+  // Tạo event cho "Xuất Excel"
   document.getElementById('export-excel').addEventListener('click', () => {
     alert('Chức năng xuất Excel đang phát triển!');
   });
+
+// Hàm tìm kiếm và hiển thị kết quả từ server
+function searchAndDisplayResults(inputElement, url, datalistId) {
+  inputElement.addEventListener('input', function () {
+    const query = inputElement.value; // Lấy giá trị người dùng nhập vào ô tìm kiếm
+
+    if (query.length > 0) {
+      // Gửi yêu cầu tìm kiếm danh sách sản phẩm có tên chứa từ khóa người dùng nhập vào
+      fetch(url + '?query=' + query)
+        .then(response => response.json())  // Xử lý kết quả trả về dưới dạng JSON
+        .then(data => {
+          const datalist = document.getElementById(datalistId);
+          datalist.innerHTML = ''; // Xóa dữ liệu cũ trong datalist
+
+          // Thêm các kết quả tìm kiếm vào datalist
+          data.forEach(item => {
+            const option = document.createElement('option');
+            option.value = item.name;  // Hiển thị tên sản phẩm
+            datalist.appendChild(option);  // Thêm option vào datalist
+          });
+        })
+        .catch(error => console.error('Error:', error)); // Xử lý lỗi nếu có
+    }
+  });
+}
+
+// Tính giá và tổng tiền khi sản phẩm và số lượng được chọn
+document.getElementById('product').addEventListener('input', function () {
+  const productName = encodeURIComponent(document.getElementById('product').value);  // Mã hóa tên sản phẩm
+  // Khi người dùng gõ ký tự vào ô tìm kiếm, chỉ cần hiển thị danh sách sản phẩm
+  // Không lấy giá ngay
+});
+
+// Tính tổng tiền khi số lượng thay đổi
+document.getElementById('quantity').addEventListener('input', function () {
+  const price = document.getElementById('price').value;
+  const quantity = document.getElementById('quantity').value;
+  if (price && quantity) {
+    document.getElementById('total').value = price * quantity; // Tính tổng tiền
+  }
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+  const customerInput = document.getElementById('customer');
+  const productInput = document.getElementById('product');
+  const userInput = document.getElementById('user');
+
+  // Tìm kiếm khách hàng
+  searchAndDisplayResults(customerInput, '/search/customers', 'customers');
+  // Tìm kiếm sản phẩm
+  searchAndDisplayResults(productInput, '/search/products', 'products');
+  // Tìm kiếm nhân viên bán hàng
+  searchAndDisplayResults(userInput, '/search/users', 'users');
+});
+
 </script>

@@ -1,6 +1,7 @@
 const Customer = require('../models/customer');
 const Supplier = require('../models/supplier');
-// Lấy danh sách khách hàng
+
+// Lấy danh sách khách hàng và nhà cung cấp
 exports.getCustomerList = async (req, res) => {
   try {
     // Lấy danh sách khách hàng
@@ -25,6 +26,7 @@ exports.getCustomerList = async (req, res) => {
       supplierTotalDebt += supplier.totalDebt || 0;
     });
 
+    // Truyền dữ liệu vào view
     res.render('customer/customer-list', { 
       customers, 
       totalPurchaseAmount,
@@ -40,25 +42,56 @@ exports.getCustomerList = async (req, res) => {
   }
 };
 
+
 // Tạo khách hàng mới
 exports.createCustomer = async (req, res) => {
   const { customerId, name, phone, email, address, note, dob, gender } = req.body;
-  
+
   try {
+    // Kiểm tra nếu mã khách hàng đã tồn tại
     const existingCustomer = await Customer.findOne({ customerId });
     if (existingCustomer) {
-      req.flash('error', 'ID Khách hàng đã tồn tại, hãy chọn 1 ID khác.');
-      return res.redirect('/customer');  
+      req.flash('error', 'Mã khách hàng đã tồn tại, vui lòng chọn mã khác.');
+      return res.redirect('/customer');  // Ensure the error is passed to the view
     }
+
+    // Kiểm tra tên khách hàng không được bỏ trống
+    if (!name) {
+      req.flash('error', 'Vui lòng nhập tên khách hàng');
+      return res.redirect('/customer');
+    }
+
+    // Kiểm tra số điện thoại (chỉ chứa chữ số và đúng độ dài)
+    const phoneRegex = /^\d{9,11}$/;
+    if (phone && !phoneRegex.test(phone)) {
+      req.flash('error', 'Số điện thoại chỉ được chứa chữ số và có độ dài từ 9 đến 11 chữ số.');
+      return res.redirect('/customer');
+    }
+
+    // Kiểm tra định dạng email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (email && !emailRegex.test(email)) {
+      req.flash('error', 'Định dạng email không hợp lệ. Vui lòng nhập địa chỉ email hợp lệ.');
+      return res.redirect('/customer');
+    }
+
+    // Kiểm tra các trường bắt buộc khác
+    const requiredFields = {
+      phone: phone || 'chưa có',
+      address: address || 'chưa có',
+      note: note || 'chưa có',
+      dob: dob || 'chưa có',
+      email: email || 'chưa có'
+    };
 
     const newCustomer = new Customer({
       customerId,
       name,
-      phone,
-      email,
-      address,
-      note,
-      dob,
+      phone: requiredFields.phone,
+      email: requiredFields.email,
+      address: requiredFields.address,
+      note: requiredFields.note,
+      dob: requiredFields.dob,
       gender
     });
 
@@ -71,6 +104,7 @@ exports.createCustomer = async (req, res) => {
     res.redirect('/customer');
   }
 };
+
 
 // Chỉnh sửa thông tin khách hàng
 exports.editCustomer = async (req, res) => {
@@ -100,13 +134,37 @@ exports.updateCustomer = async (req, res) => {
       return res.redirect('/customer');
     }
 
+    // Kiểm tra mã khách hàng mới
+    if (customerId && customerId !== customer.customerId) {
+      const existingCustomer = await Customer.findOne({ customerId });
+      if (existingCustomer) {
+        req.flash('error', 'Mã khách hàng đã tồn tại, hãy chọn 1 ID khác.');
+        return res.redirect(`/customer/edit/${id}`);
+      }
+    }
+
+    // Kiểm tra tên khách hàng không trống
+    if (!name) {
+      req.flash('error', 'Vui lòng nhập tên khách hàng');
+      return res.redirect(`/customer/edit/${id}`);
+    }
+
+    // Kiểm tra các trường bắt buộc
+    const requiredFields = {
+      phone: phone || 'chưa có',
+      address: address || 'chưa có',
+      note: note || 'chưa có',
+      dob: dob || 'chưa có',
+      email: email || 'chưa có'
+    };
+
     customer.customerId = customerId || customer.customerId;
     customer.name = name || customer.name;
-    customer.phone = phone || customer.phone;
-    customer.email = email || customer.email;
-    customer.address = address || customer.address;
-    customer.note = note || customer.note;
-    customer.dob = dob || customer.dob;
+    customer.phone = requiredFields.phone;
+    customer.email = requiredFields.email;
+    customer.address = requiredFields.address;
+    customer.note = requiredFields.note;
+    customer.dob = requiredFields.dob;
     customer.gender = gender || customer.gender;
 
     await customer.save();
@@ -115,6 +173,6 @@ exports.updateCustomer = async (req, res) => {
   } catch (error) {
     console.log(error);
     req.flash('error', 'Đã có lỗi khi cập nhật thông tin khách hàng');
-    res.redirect('/customer');
+    res.redirect(`/customer/edit/${id}`);
   }
 };

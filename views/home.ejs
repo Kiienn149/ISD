@@ -95,8 +95,6 @@
     <a href="#">Thu chi</a>
     <a href="/profit" data-link>Lợi nhuận</a>
 
-
-
     <% if (user.role === 'owner') { %>
       <li><a href="/settings">⚙️ Thiết lập</a></li>
     <% } %>
@@ -111,7 +109,6 @@
     <div class="header-bar">
       <div class="user-dropdown">
         <span class="user-name">🔥 Xin chào, <b><%= user.name %></b> (<%= user.role %>) ▼</span>
-       
         <div class="dropdown-menu">
           <a href="/account">Tài khoản</a>
           <a href="/logout">Đăng xuất</a>
@@ -158,47 +155,49 @@
     </div>
 
     <script>
-      document.querySelectorAll('a[data-link]').forEach(link => {
-        link.addEventListener('click', async (e) => {
-          e.preventDefault();
-          const url = link.getAttribute('href');
-          const res = await fetch(url);
-          const html = await res.text();
-          document.getElementById('main-content').innerHTML = html;
-        });
+      // Thêm mã JavaScript của bạn vào đây
+      document.addEventListener('DOMContentLoaded', function () {
+        const createOrderBtn = document.getElementById('create-order-btn');
+        
+        if (createOrderBtn) {
+          createOrderBtn.addEventListener('click', function () {
+            const form = document.getElementById('add-order-form');
+            form.style.display = form.style.display === 'none' ? 'block' : 'none'; // Ẩn/hiện form
+          });
+        }
+
+        const exportExcelBtn = document.getElementById('export-excel');
+        
+        if (exportExcelBtn) {
+          exportExcelBtn.addEventListener('click', () => {
+            alert('Chức năng xuất Excel đang phát triển!');
+          });
+        }
       });
     </script>
-    
 
   </div>
 
-
-
   <script>
-    $('#order-link').click(function (e) {
-      e.preventDefault();
-      $.get('/partial/order', function (data) {
-        $('#main-content').html(data); // ✅ Không hide, không xài dynamic-content
-      });
-    });
-  
-    $('#home-link').click(function (e) {
-      e.preventDefault();
-      location.reload(); // ✅ Reload lại trang chủ để hiện dashboard gốc
-    });
-  
-    document.querySelectorAll('a[data-link]').forEach(link => {
-      link.addEventListener('click', async (e) => {
-        e.preventDefault();
-        const url = link.getAttribute('href');
-        const res = await fetch(url);
-        const html = await res.text();
-        document.getElementById('main-content').innerHTML = html;
-      });
+    // Đảm bảo phần tử tồn tại trước khi gán sự kiện
+    $(document).ready(function() {
+      if ($('#order-link').length) {
+        $('#order-link').click(function (e) {
+          e.preventDefault();
+          $.get('/order/partials/order', function (data) {  // Đảm bảo đường dẫn đúng
+            $('#main-content').html(data); // ✅ Không hide, không xài dynamic-content
+          });
+        });
+      }
+
+      if ($('#home-link').length) {
+        $('#home-link').click(function (e) {
+          e.preventDefault();
+          location.reload(); // ✅ Reload lại trang chủ để hiện dashboard gốc
+        });
+      }
     });
   </script>
-  
-  
-  
+
 </body>
 </html>

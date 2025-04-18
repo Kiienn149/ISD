@@ -29,19 +29,29 @@ exports.showProductDetail = async (req, res) => {
   }
 };
 
+
 // Tạo sản phẩm mới
 exports.createProduct = async (req, res) => {
-  const { name, sku, price, quantity, category, manufacturer, capital } = req.body;  // Thêm 'capital' vào
+  const { name, sku, price, quantity, category, manufacturer, capital } = req.body; 
 
-  // Kiểm tra giá bán không thể thấp hơn giá vốn
-  if (price < capital) {
-    req.flash('error', 'Giá sản phẩm không thể thấp hơn giá vốn');
+  // Kiểm tra các trường thông tin cần thiết
+  if (!name || !sku || !category || !manufacturer) {
+    req.flash('error', 'Tên sản phẩm, mã sản phẩm, danh mục, và nhà sản xuất không được bỏ trống');
     return res.redirect('/products/create');
   }
 
+  // Kiểm tra giá bán, giá vốn, và số lượng phải lớn hơn 0
+  if (price <= 0 || capital <= 0 || quantity <= 0) {
+    req.flash('error', 'Giá bán, giá vốn và số lượng phải lớn hơn 0');
+    return res.redirect('/products/create');
+  }
+
+  // Tạo mã sản phẩm nếu chưa có mã
+  const productSku = sku || generateUniqueSku();  // Hàm tạo mã sản phẩm duy nhất nếu không nhập mã
+
   try {
     // Kiểm tra mã sản phẩm đã tồn tại chưa
-    const existingProduct = await Product.findOne({ sku });
+    const existingProduct = await Product.findOne({ sku: productSku });
     if (existingProduct) {
       req.flash('error', 'Mã sản phẩm đã tồn tại. Vui lòng chọn mã khác.');
       return res.redirect('/products/create');
@@ -49,16 +59,16 @@ exports.createProduct = async (req, res) => {
 
     const newProduct = new Product({
       name,
-      sku,
+      sku: productSku,
       price,
       quantity,
       category,
       manufacturer,
-      capital  // Lưu giá vốn
+      capital  
     });
 
     await newProduct.save();
-    req.flash('success', 'Sản phẩm đã được thêm');
+    req.flash('success', 'Tạo sản phẩm thành công');
     res.redirect('/products');
   } catch (err) {
     console.error('Lỗi khi tạo sản phẩm:', err);
@@ -66,7 +76,9 @@ exports.createProduct = async (req, res) => {
     res.redirect('/products/create');
   }
 };
-
+function generateUniqueSku() {
+  return 'SKU-' + Math.random().toString(36).substr(10000, 100000);  // Tạo mã ngẫu nhiên (có thể thay đổi theo yêu cầu)
+}
 
 
 // Sửa thông tin sản phẩm

@@ -1,15 +1,14 @@
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  product: { type: String, required: true },  // Tên sản phẩm
-  customer: { type: String, required: true }, // Tên khách hàng
-  quantity: { type: Number, required: true }, // Số lượng
-  price: { type: Number, required: true },    // Giá sản phẩm
-  total: { type: Number, required: true },    // Tổng tiền
-  date: { type: Date, default: Date.now },    // Ngày bán
-  status: { type: String, default: 'Đang chờ' } // Trạng thái đơn hàng
-});
+  product: { type: String, required: true },  // Lưu tên sản phẩm thay vì ObjectId
+  customer: { type: mongoose.Schema.Types.ObjectId, ref: 'Customer', required: true },
+  user: { type: String, required: true },     // Lưu tên nhân viên bán hàng
+  quantity: { type: Number, required: true },
+  price: { type: Number, required: true },
+  total: { type: Number, required: true },
+  status: { type: String, default: 'Đang xử lý' },
+  date: { type: Date, default: Date.now }
+}, { timestamps: true });
 
-const Order = mongoose.model('Order', orderSchema);
-module.exports = Order;
-
+module.exports = mongoose.model('Order', orderSchema);

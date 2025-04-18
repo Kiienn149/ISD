@@ -39,10 +39,15 @@
 <body>
     <h2>Tạo mới khách hàng</h2>
     <form action="/customer/create" method="POST">
+        <% if (error_message) { %>
+            <div class="alert alert-danger">
+              <%= error_message %>
+            </div>
+        <% } %>
         <label for="customerId">Mã khách hàng</label>
         <input type="text" id="customerId" name="customerId" required placeholder="Mã khách hàng" />
         
-        <label for="name">Tên khách hàng</label>
+        <label for="name">Tên khách ădawdhàng</label>
         <input type="text" id="name" name="name" required placeholder="Tên khách hàng" />
 
         <label for="phone">Số điện thoại</label>

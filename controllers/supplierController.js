@@ -12,7 +12,7 @@ exports.getSupplierList = async (req, res) => {
       totalDebt += supplier.totalDebt || 0;
     });
 
-    res.render('supplier/supplier-list', { 
+    res.render('customer/customer-list', { 
       suppliers, 
       totalPurchaseAmount,
       totalDebt 
@@ -29,30 +29,46 @@ exports.createSupplier = async (req, res) => {
   const { supplierId, name, phone, email, address, note } = req.body;
 
   try {
+    // Kiểm tra nếu mã nhà cung cấp đã tồn tại
     const existingSupplier = await Supplier.findOne({ supplierId });
     if (existingSupplier) {
-      req.flash('error', 'ID Nhà cung cấp đã tồn tại, hãy chọn 1 ID khác.');
-      return res.redirect('/supplier');  
+      req.flash('error', 'Mã nhà cung cấp đã tồn tại, hãy chọn 1 ID khác.');
+      return res.redirect('/supplier');  // Redirect to the supplier page if the ID exists
     }
+
+    // Kiểm tra tên nhà cung cấp không được bỏ trống
+    if (!name) {
+      req.flash('error', 'Vui lòng nhập tên nhà cung cấp');
+      return res.redirect('/supplier');  // Redirect to the supplier creation page
+    }
+
+    // Kiểm tra các trường khác và tự động điền "chưa có" nếu để trống
+    const requiredFields = {
+      phone: phone || 'chưa có',
+      address: address || 'chưa có',
+      note: note || 'chưa có',
+      email: email || 'chưa có'
+    };
 
     const newSupplier = new Supplier({
       supplierId,
       name,
-      phone,
-      email,
-      address,
-      note
+      phone: requiredFields.phone,
+      email: requiredFields.email,
+      address: requiredFields.address,
+      note: requiredFields.note
     });
 
     await newSupplier.save();
     req.flash('success', 'Nhà cung cấp đã được thêm thành công');
-    res.redirect('/supplier');  
+    res.redirect('/supplier');  // Redirect to the supplier page after creation
   } catch (error) {
     console.log(error);
     req.flash('error', 'Đã có lỗi khi thêm nhà cung cấp');
-    res.redirect('/supplier');
+    res.redirect('/supplier');  // In case of error, redirect to the supplier page
   }
 };
+
 
 // Chỉnh sửa thông tin nhà cung cấp
 exports.editSupplier = async (req, res) => {

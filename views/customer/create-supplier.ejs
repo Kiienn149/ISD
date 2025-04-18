@@ -10,6 +10,11 @@
 <body>
     <h2>Tạo mới nhà cung cấp</h2>
     <form action="/supplier/create" method="POST">
+        <% if (error_message) { %>
+            <div class="alert alert-danger">
+              <%= error_message %>
+            </div>
+          <% } %>
         <label for="supplierId">Mã nhà cung cấp</label>
         <input type="text" id="supplierId" name="supplierId" required placeholder="Mã nhà cung cấp" />
 
