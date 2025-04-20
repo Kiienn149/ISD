@@ -29,8 +29,8 @@ exports.getCustomerList = async (req, res) => {
     // Truyền dữ liệu vào view
     res.render('customer/customer-list', { 
       customers, 
-      totalPurchaseAmount,
-      totalDebt,
+      totalPurchaseAmount,  // Tổng tiền hàng của khách hàng
+      totalDebt,  // Tổng nợ của khách hàng
       suppliers,  // Truyền suppliers vào ejs
       supplierTotalPurchaseAmount,  // Tổng tiền hàng của nhà cung cấp
       supplierTotalDebt  // Tổng nợ của nhà cung cấp
@@ -41,6 +41,7 @@ exports.getCustomerList = async (req, res) => {
     res.redirect('/home');
   }
 };
+
 
 
 // Tạo khách hàng mới

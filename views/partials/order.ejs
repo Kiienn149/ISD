@@ -1,3 +1,4 @@
+<!-- views/partials/order.ejs-->
 <div class="main-container">
   <!-- Thanh tiêu đề -->
   <div class="page-title-bar">
@@ -25,7 +26,7 @@
             <tr>
               <td><%= order._id %></td>
               <td><%= order.product %></td>
-              <td><%= order.customer %></td>
+              <td><%= order.customer.name %></td>
               <td><%= order.quantity %></td>
               <td><%= order.price.toLocaleString('vi-VN') %> ₫</td>
               <td><%= order.total.toLocaleString('vi-VN') %> ₫</td>
@@ -42,33 +43,34 @@
   <div class="add-order-form" id="add-order-form" style="display:none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
     <h3>Thêm đơn hàng mới</h3>
     <form action="/order/create" method="POST">
-      <label for="product">Sản phẩm:</label>
-      <input type="text" id="product" name="product" list="products" required>
+      <label for="productName">Sản phẩm:</label>
+      <input type="text" id="product" name="productName" list="products" required>
       <datalist id="products">
         <!-- Dữ liệu sẽ được điền qua JavaScript -->
       </datalist><br><br>
-
-      <label for="customer">Khách hàng:</label>
-      <input type="text" id="customer" name="customer" list="customers" required>
+    
+      <label for="customerId">Khách hàng:</label>
+      <input type="text" id="customer" name="customerName" list="customers" required>
+      <input type="hidden" id="customerId" name="customerId">
       <datalist id="customers">
         <!-- Dữ liệu sẽ được điền qua JavaScript -->
       </datalist><br><br>
-
-      <label for="user">Nhân viên bán hàng:</label>
-      <input type="text" id="user" name="user" list="users" required>
+    
+      <label for="userName">Nhân viên bán hàng:</label>
+      <input type="text" id="user" name="userName" list="users" required>
       <datalist id="users">
         <!-- Dữ liệu sẽ được điền qua JavaScript -->
       </datalist><br><br>
-
+    
       <label for="quantity">Số lượng:</label>
       <input type="number" id="quantity" name="quantity" required><br><br>
-
+    
       <label for="price">Giá:</label>
       <input type="number" id="price" name="price" readonly><br><br>
-
+    
       <label for="total">Tổng tiền:</label>
       <input type="number" id="total" name="total" readonly><br><br>
-
+    
       <button type="submit">Thêm đơn hàng</button>
     </form>
   </div>
@@ -89,38 +91,47 @@
     alert('Chức năng xuất Excel đang phát triển!');
   });
 
-// Hàm tìm kiếm và hiển thị kết quả từ server
-function searchAndDisplayResults(inputElement, url, datalistId) {
+  function searchAndDisplayResults(inputElement, url, datalistId) {
   inputElement.addEventListener('input', function () {
-    const query = inputElement.value; // Lấy giá trị người dùng nhập vào ô tìm kiếm
+    const query = inputElement.value;
 
     if (query.length > 0) {
-      // Gửi yêu cầu tìm kiếm danh sách sản phẩm có tên chứa từ khóa người dùng nhập vào
-      fetch(url + '?query=' + query)
-        .then(response => response.json())  // Xử lý kết quả trả về dưới dạng JSON
+      fetch(`/order${url}?query=${query}`)  // Thêm prefix '/order' vào URL
+        .then(response => response.json())
         .then(data => {
           const datalist = document.getElementById(datalistId);
-          datalist.innerHTML = ''; // Xóa dữ liệu cũ trong datalist
+          datalist.innerHTML = '';
 
-          // Thêm các kết quả tìm kiếm vào datalist
           data.forEach(item => {
             const option = document.createElement('option');
-            option.value = item.name;  // Hiển thị tên sản phẩm
-            datalist.appendChild(option);  // Thêm option vào datalist
+            option.value = item.name;
+            datalist.appendChild(option);
           });
         })
-        .catch(error => console.error('Error:', error)); // Xử lý lỗi nếu có
+        .catch(error => console.error('Error:', error));
     }
   });
 }
 
-// Tính giá và tổng tiền khi sản phẩm và số lượng được chọn
-document.getElementById('product').addEventListener('input', function () {
-  const productName = encodeURIComponent(document.getElementById('product').value);  // Mã hóa tên sản phẩm
-  // Khi người dùng gõ ký tự vào ô tìm kiếm, chỉ cần hiển thị danh sách sản phẩm
-  // Không lấy giá ngay
+document.getElementById('product').addEventListener('change', function() {
+  const productName = encodeURIComponent(this.value);
+  if (productName) {
+    fetch(`/order/getPrice/${productName}`)
+      .then(response => response.json())
+      .then(data => {
+        if (data.price) {
+          document.getElementById('price').value = data.price;
+          
+          // Tính lại tổng tiền nếu có số lượng
+          const quantity = document.getElementById('quantity').value;
+          if (quantity) {
+            document.getElementById('total').value = data.price * quantity;
+          }
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
 });
-
 // Tính tổng tiền khi số lượng thay đổi
 document.getElementById('quantity').addEventListener('input', function () {
   const price = document.getElementById('price').value;
@@ -129,7 +140,21 @@ document.getElementById('quantity').addEventListener('input', function () {
     document.getElementById('total').value = price * quantity; // Tính tổng tiền
   }
 });
-
+// Lưu ID khi chọn khách hàng
+document.getElementById('customer').addEventListener('input', function() {
+  const customerName = this.value;
+  if (customerName) {
+    fetch(`/order/search/customers?query=${customerName}`)
+      .then(response => response.json())
+      .then(data => {
+        const customer = data.find(c => c.name === customerName);
+        if (customer) {
+          document.getElementById('customerId').value = customer._id;
+        }
+      })
+      .catch(error => console.error('Error:', error));
+  }
+});
 document.addEventListener('DOMContentLoaded', function () {
   const customerInput = document.getElementById('customer');
   const productInput = document.getElementById('product');

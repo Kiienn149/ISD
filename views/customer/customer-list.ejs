@@ -1,3 +1,4 @@
+<!-- views/customer/customer-list.ejs-->
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -182,7 +183,7 @@
         
         <% if (error_message) { %>
             <div class="alert alert-danger">
-              <%= error_message %>
+                <%= error_message %>
             </div>
         <% } %>
         
@@ -194,6 +195,7 @@
                     <th>Điện thoại</th>
                     <th>Địa chỉ</th>
                     <th>Lần cuối mua hàng</th>
+                    <th>Tổng tiền hàng</th> <!-- Cột tổng tiền hàng -->
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -204,7 +206,8 @@
                         <td><%= customer.name %></td>
                         <td><%= customer.phone %></td>
                         <td><%= customer.address %></td>
-                        <td><%= customer.lastPurchaseDate %></td>
+                        <td><%= customer.lastPurchaseDate ? customer.lastPurchaseDate.toLocaleDateString('vi-VN') : 'Chưa xác định' %></td>
+                        <td><%= customer.totalPurchaseAmount.toLocaleString('vi-VN') %> ₫</td> <!-- Hiển thị tổng tiền hàng -->
                         <td>
                             <a href="/customer/edit/<%= customer._id %>">Sửa</a> | 
                             <a href="/customer/delete/<%= customer._id %>">Xóa</a>
@@ -215,9 +218,10 @@
         </table>
         
         <div class="footer-stats">
-            <p>Số khách hàng: <%= customers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount %> | Tổng nợ: <%= totalDebt %></p>
+            <p>Số khách hàng: <%= customers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount.toLocaleString('vi-VN') %> ₫ | Tổng nợ: <%= totalDebt.toLocaleString('vi-VN') %> ₫</p>
         </div>
     </div>
+
 
     <!-- Tab content for suppliers -->
     <div id="suppliers-content" class="tab-content">
@@ -260,7 +264,7 @@
         </table>
         
         <div class="footer-stats">
-            <p>Số nhà cung cấp: <%= suppliers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount %> | Tổng nợ: <%= totalDebt %></p>
+            <p>Số nhà cung cấp: <%= suppliers.length %> | > | Tổng nợ: <%= totalDebt %></p>
         </div>
     </div>
 

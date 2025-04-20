@@ -2,47 +2,211 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Danh sách sản phẩm</title>
+  <title>Trang quản lý hệ thống</title>
+  <link rel="stylesheet" href="/css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 200px;
+      height: 100vh;
+      background-color: #007bdb;
+      color: white;
+      padding-top: 20px;
+    }
+    .sidebar a {
+      display: block;
+      color: white;
+      padding: 12px 20px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .sidebar a:hover {
+      background-color: #005fa3;
+    }
+    .topbar {
+      margin-left: 200px;
+      background-color: #007bdb;
+      color: white;
+      padding: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .dashboard {
+      margin-left: 200px;
+      padding: 20px;
+    }
+    .card-group {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .card {
+      flex: 1;
+      min-width: 220px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      text-align: center;
+    }
+    .card h4 {
+      margin: 0 0 8px;
+    }
+    .section-title {
+      margin-top: 30px;
+      margin-bottom: 12px;
+      font-size: 18px;
+      font-weight: bold;
+    }
+    .stat-blocks {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+    .block {
+      flex: 1;
+      min-width: 200px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+  </style>
 </head>
 <body>
-  <h1>Danh sách sản phẩm</h1>
-  <form action="/products" method="GET">
-    <input type="text" name="search" placeholder="Tìm kiếm sản phẩm...">
-    <button type="submit">Tìm kiếm</button>
-  </form>
-  <table>
-    <thead>
-      <tr>
-        <th>Tên sản phẩm</th>
-        <th>Mã sản phẩm</th>
-        <th>Số lượng</th>
-        <th>Giá bán</th>
-        <th>Danh mục</th>
-        <th>Nhà sản xuất</th>
-        <th>Hành động</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% products.forEach(product => { %>
+  <div class="sidebar">
+    <a href="#">POS Bán Hàng</a>
+    <a href="#" id="home-link">Trang Chủ</a>
+    <a href="#" id="order-link">Tạo đơn hàng</a>
+    <a href="/products" data-link>Sản phẩm</a>
+    <a href="/customer" >Khách hàng</a>
+    <a href="#">Nhập kho</a>
+    <a href="/inventory" data-link>Tồn kho</a>
+    <a href="#">Doanh số</a>
+    <a href="#">Thu chi</a>
+    <a href="/profit" data-link>Lợi nhuận</a>
+
+    <% if (user.role === 'owner') { %>
+      <li><a href="/settings">⚙️ Thiết lập</a></li>
+    <% } %>
+  </div>
+
+  <div class="topbar">
+    <div><strong>💼 QUẢN LÝ BÁN HÀNG VLXD</strong></div>
+    <p style="margin-top: 30px; font-weight: 500; color: #e2e6ea;">
+      🔐 Bạn đang đăng nhập với quyền: <strong><%= user.role %></strong>
+    </p>
+    <div class="header-bar">
+      <div class="user-dropdown">
+        <span class="user-name">🔥 Xin chào, <b><%= user.name %></b> (<%= user.role %>) ▼</span>
+        <div class="dropdown-menu">
+          <a href="/account">Tài khoản</a>
+          <a href="/logout">Đăng xuất</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="dashboard">
+    <h1>Danh sách sản phẩm</h1>
+    <form action="/products" method="GET">
+      <input type="text" name="search" placeholder="Tìm kiếm sản phẩm...">
+      <button type="submit">Tìm kiếm</button>
+    </form>
+    <table>
+      <thead>
         <tr>
-          <td><%= product.name %></td>
-          <td><%= product.sku %></td>
-          <td><%= product.quantity %></td>
-          <td><%= product.price %></td>
-          <td><%= product.category %></td>
-          <td><%= product.manufacturer %></td>
-          <td>
-            <a href="/products/detail/<%= product._id %>">Xem</a>
-            <a href="/products/edit/<%= product._id %>">Sửa</a>
-            <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
-              <button type="submit">Xóa</button>
-            </form>
-          </td>
+          <th>Tên sản phẩm</th>
+          <th>Mã sản phẩm</th>
+          <th>Số lượng</th>
+          <th>Giá bán</th>
+          <th>Danh mục</th>
+          <th>Nhà sản xuất</th>
+          <th>Hành động</th>
         </tr>
-      <% }); %>
-    </tbody>
-  </table>
-  <p>Số sản phẩm: <%= products.length %></p>
-  <a href="/products/create">Tạo sản phẩm mới</a>
+      </thead>
+      <tbody>
+        <% products.forEach(product => { %>
+          <tr>
+            <td><%= product.name %></td>
+            <td><%= product.sku %></td>
+            <td><%= product.quantity %></td>
+            <td><%= product.price %></td>
+            <td><%= product.category %></td>
+            <td><%= product.manufacturer %></td>
+            <td>
+              <a href="/products/detail/<%= product._id %>">Xem</a>
+              <a href="/products/edit/<%= product._id %>">Sửa</a>
+              <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+                <button type="submit">Xóa</button>
+              </form>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+    <p>Số sản phẩm: <%= products.length %></p>
+    <a href="/products/create">Tạo sản phẩm mới</a>
+  </div>
+
+  <script>
+    // Hiển thị form khi nhấn nút "Đặt hàng"
+    document.getElementById('create-order-btn').addEventListener('click', function() {
+      const form = document.getElementById('add-order-form');
+      form.style.display = form.style.display === 'none' ? 'block' : 'none'; // Ẩn/hiện form
+    });
+
+    // Tạo event cho "Xuất Excel"
+    document.getElementById('export-excel').addEventListener('click', () => {
+      alert('Chức năng xuất Excel đang phát triển!');
+    });
+
+    // Hàm tìm kiếm và hiển thị kết quả từ server
+    function searchAndDisplayResults(inputElement, url, datalistId) {
+      inputElement.addEventListener('input', function () {
+        const query = inputElement.value; // Lấy giá trị người dùng nhập vào ô tìm kiếm
+
+        if (query.length > 0) {
+          // Gửi yêu cầu tìm kiếm danh sách sản phẩm có tên chứa từ khóa người dùng nhập vào
+          fetch(url + '?query=' + query)
+            .then(response => response.json())  // Xử lý kết quả trả về dưới dạng JSON
+            .then(data => {
+              const datalist = document.getElementById(datalistId);
+              datalist.innerHTML = ''; // Xóa dữ liệu cũ trong datalist
+
+              // Thêm các kết quả tìm kiếm vào datalist
+              data.forEach(item => {
+                const option = document.createElement('option');
+                option.value = item.name;  // Hiển thị tên sản phẩm
+                datalist.appendChild(option);  // Thêm option vào datalist
+              });
+            })
+            .catch(error => console.error('Error:', error)); // Xử lý lỗi nếu có
+        }
+      });
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const customerInput = document.getElementById('customer');
+      const productInput = document.getElementById('product');
+      const userInput = document.getElementById('user');
+
+      // Tìm kiếm khách hàng
+      searchAndDisplayResults(customerInput, '/search/customers', 'customers');
+      // Tìm kiếm sản phẩm
+      searchAndDisplayResults(productInput, '/search/products', 'products');
+      // Tìm kiếm nhân viên bán hàng
+      searchAndDisplayResults(userInput, '/search/users', 'users');
+    });
+  </script>
 </body>
 </html>

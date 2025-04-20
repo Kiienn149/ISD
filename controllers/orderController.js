@@ -11,37 +11,52 @@ exports.createOrder = async (req, res) => {
     const customer = await Customer.findById(customerId);
     const user = await User.findOne({ name: userName });
 
+    // Kiểm tra nếu sản phẩm, khách hàng, hoặc nhân viên không tồn tại
     if (!product || !customer || !user) {
       return res.status(404).json({ error: 'Dữ liệu không hợp lệ, không tìm thấy sản phẩm, khách hàng, hoặc nhân viên bán hàng' });
     }
 
+    // Kiểm tra nếu số lượng sản phẩm không đủ trong kho
     if (product.quantity < quantity) {
       return res.status(400).json({ error: 'Không đủ hàng trong kho' });
     }
 
+    // Tính toán tổng tiền của đơn hàng
     const totalPrice = product.price * quantity;
 
+    // Cập nhật tổng tiền mua hàng của khách hàng
+    customer.totalPurchaseAmount += totalPrice; // Cộng tổng tiền vào `totalPurchaseAmount` của khách hàng
+    await customer.save(); // Lưu thay đổi của khách hàng vào cơ sở dữ liệu
+
+    // Tạo một đơn hàng mới
     const newOrder = new Order({
       product: product.name,   // Lưu tên sản phẩm vào đơn hàng
       customer: customerId,
       user: user.name,         // Lưu tên nhân viên bán hàng
       quantity,
       price: product.price,
-      total: totalPrice,
+      total: totalPrice,       // Tổng tiền của đơn hàng
       status: 'Đang xử lý',
       date: new Date(),
     });
 
+    // Lưu đơn hàng mới
     await newOrder.save();
+
+    // Giảm số lượng sản phẩm trong kho
     product.quantity -= quantity;
     await product.save();
 
+    // Trả về thông báo thành công
     res.status(201).json({ message: 'Đơn hàng đã được tạo thành công', order: newOrder });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Lỗi hệ thống' });
   }
 };
+
+
+
 
 // Lấy danh sách đơn hàng
 exports.getOrders = async (req, res) => {
@@ -72,6 +87,7 @@ exports.getPrice = async (req, res) => {
     res.status(500).json({ error: 'Lỗi hệ thống khi lấy giá sản phẩm' });
   }
 };
+
 
 
 // Route tìm kiếm sản phẩm theo tên
