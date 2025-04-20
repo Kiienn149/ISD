@@ -46,10 +46,9 @@
                 <th>Mã đơn hàng</th>
                 <th>Cửa hàng</th>
                 <th>Ngày bán</th>
-                <th>Phương thức thanh toán</th>
+                <th>Thu ngân</th>
                 <th>Khách hàng</th>
                 <th>Số lượng</th>
-                <th>Chiết khấu</th>
                 <th>Doanh thu</th>
                 <th>Vốn</th>
                 <th>Lợi nhuận</th>
@@ -60,19 +59,18 @@
                 <tr>
                     <td><%= order._id %></td>
                     <td><%= order.store %></td>
-                    <td><%= order.salesDate %></td>
-                    <td><%= order.paymentMethod %></td>
-                    <td><%= order.customer %></td>
+                    <td><%= order.date.toLocaleDateString('vi-VN') %></td>
+                    <td><%= order.user %></td> <!-- Thu ngân -->
+                    <td><%= order.customer.name %></td> <!-- Tên khách hàng -->
                     <td><%= order.quantity %></td>
-                    <td><%= order.discount %></td>
-                    <td><%= order.salesRevenue %></td>
-                    <td><%= order.capital %></td>
-                    <td><%= order.profit %></td>
+                    <td><%= order.total %></td> <!-- Doanh thu -->
+                    <td><%= (order.product?.capital * order.quantity) || 0 %></td> <!-- Tiền vốn -->
+                    <td><%= (order.total - (order.product?.capital * order.quantity || 0)) %></td> <!-- Lợi nhuận -->
                 </tr>
             <% }); %>
         </tbody>
     </table>
-
+    
     <div>
         <p>Tổng số đơn hàng: <%= totalOrders %></p>
         <p>Tổng số tiền chiết khấu: <%= totalDiscount %></p>
@@ -80,5 +78,6 @@
         <p>Vốn: <%= capital %></p>
         <p>Lợi nhuận: <%= profit %></p>
     </div>
+    
 </body>
 </html>

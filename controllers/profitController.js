@@ -1,11 +1,11 @@
-const Order = require('../models/order');  // Giả sử bạn có model Order
+const Order = require('../models/order');
+const Product = require('../models/product');
 
-// Lấy báo cáo lợi nhuận
 exports.getProfitReport = async (req, res) => {
   try {
     // Lấy các tham số filter từ query string
     const { startDate, endDate, customer, paymentMethod, salesperson, store } = req.query;
-    
+
     // Tạo bộ lọc cho việc tìm kiếm đơn hàng
     const filter = {};
 
@@ -13,8 +13,8 @@ exports.getProfitReport = async (req, res) => {
     if (startDate && endDate) {
       filter.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
     }
-    
-    // Áp dụng lọc theo customer, paymentMethod, salesperson, store nếu có
+
+    // Áp dụng lọc theo các tham số khác nếu có
     if (customer) {
       filter.customer = customer;
     }
@@ -28,14 +28,25 @@ exports.getProfitReport = async (req, res) => {
       filter.store = store;
     }
 
-    // Lấy danh sách đơn hàng thỏa mãn điều kiện lọc
-    const orders = await Order.find(filter);  // Tìm các đơn hàng theo điều kiện lọc
+    // Lấy danh sách đơn hàng thỏa mãn điều kiện lọc và populate dữ liệu sản phẩm và khách hàng
+    const orders = await Order.find(filter)
+      .populate('customer')  // Populate dữ liệu khách hàng
+      .populate('product');  // Populate dữ liệu sản phẩm
 
-    // Tính toán các thông tin báo cáo: tổng số đơn hàng, tổng số tiền chiết khấu, doanh thu, vốn và lợi nhuận
+    // Tính toán các thông tin báo cáo
     const totalOrders = orders.length;
     const totalDiscount = orders.reduce((acc, order) => acc + (order.discount || 0), 0);
-    const salesRevenue = orders.reduce((acc, order) => acc + (order.salesRevenue || 0), 0);
-    const capital = orders.reduce((acc, order) => acc + (order.capital || 0), 0);
+    const salesRevenue = orders.reduce((acc, order) => acc + (order.total || 0), 0);
+
+    // Kiểm tra capital và tính vốn
+    const capital = orders.reduce((acc, order) => {
+      // Kiểm tra nếu sản phẩm có thông tin capital
+      if (order.product && order.product.capital) {
+        return acc + (order.product.capital * order.quantity || 0);
+      }
+      return acc;
+    }, 0);
+
     const profit = salesRevenue - capital - totalDiscount;
 
     // Render báo cáo lợi nhuận với các thông tin cần thiết

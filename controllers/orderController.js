@@ -3,11 +3,10 @@ const Product = require('../models/product');
 const User = require('../models/user');
 const Customer = require('../models/customer');
 
-// Tạo đơn hàng mới
 exports.createOrder = async (req, res) => {
   try {
     const { productName, customerId, userName, quantity } = req.body;
-    const product = await Product.findOne({ name: productName });  // Sử dụng tên sản phẩm thay vì productId
+    const product = await Product.findOne({ name: productName });  // Tìm sản phẩm theo tên
     const customer = await Customer.findById(customerId);
     const user = await User.findOne({ name: userName });
 
@@ -25,17 +24,18 @@ exports.createOrder = async (req, res) => {
     const totalPrice = product.price * quantity;
 
     // Cập nhật tổng tiền mua hàng của khách hàng
-    customer.totalPurchaseAmount += totalPrice; // Cộng tổng tiền vào `totalPurchaseAmount` của khách hàng
-    await customer.save(); // Lưu thay đổi của khách hàng vào cơ sở dữ liệu
+    customer.totalPurchaseAmount += totalPrice;  // Cộng tổng tiền vào `totalPurchaseAmount` của khách hàng
+    await customer.save();  // Lưu thay đổi của khách hàng vào cơ sở dữ liệu
 
-    // Tạo một đơn hàng mới
+    // Tạo đơn hàng mới và lưu `capital` vào Order
     const newOrder = new Order({
-      product: product.name,   // Lưu tên sản phẩm vào đơn hàng
+      product: product._id,   // Lưu ObjectId của sản phẩm vào đơn hàng
       customer: customerId,
       user: user.name,         // Lưu tên nhân viên bán hàng
       quantity,
       price: product.price,
       total: totalPrice,       // Tổng tiền của đơn hàng
+      capital: product.capital,  // Lưu capital từ Product vào Order
       status: 'Đang xử lý',
       date: new Date(),
     });
@@ -58,18 +58,27 @@ exports.createOrder = async (req, res) => {
 
 
 
-// Lấy danh sách đơn hàng
+
 exports.getOrders = async (req, res) => {
   try {
     const orders = await Order.find()
-      .populate('product')   // Populating để lấy dữ liệu sản phẩm từ productId
-      .populate('customer'); // Populating để lấy dữ liệu khách hàng từ customerId
+      .populate('product')   // Đảm bảo populate đúng trường product
+      .populate('customer'); // Populate dữ liệu khách hàng
+
+    // Kiểm tra nếu product không tồn tại trong order
+    orders.forEach(order => {
+      if (!order.product) {
+        console.log(`Product not populated for order ${order._id}`);
+      }
+    });
+
     res.render('partials/order', { orders });
   } catch (err) {
     console.error(err);
     res.status(500).send('Không thể tải danh sách đơn hàng');
   }
 };
+
 
 // Route lấy giá sản phẩm
 exports.getPrice = async (req, res) => {

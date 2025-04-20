@@ -25,7 +25,13 @@
           <% orders.forEach(order => { %>
             <tr>
               <td><%= order._id %></td>
-              <td><%= order.product %></td>
+              <td>
+                <% if (order.product) { %> <!-- Kiểm tra nếu product tồn tại -->
+                  <%= order.product.name %>
+                <% } else { %>
+                  Sản phẩm không có
+                <% } %>
+              </td>
               <td><%= order.customer.name %></td>
               <td><%= order.quantity %></td>
               <td><%= order.price.toLocaleString('vi-VN') %> ₫</td>
@@ -36,6 +42,7 @@
           <% }) %>
         <% } %>
       </tbody>
+      
     </table>
   </div>
 
