@@ -1,4 +1,4 @@
-// middleware yêu cầu đăng nhập
+// middlewares/auth.js
 exports.requireLogin = (req, res, next) => {
   console.log('Checking if user is logged in:', req.session && req.session.user ? 'Logged in' : 'Not logged in');
   

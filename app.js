@@ -14,6 +14,7 @@ const customerRoutes = require('./routes/customerRoutes');
 const supplierRoutes = require('./routes/supplierRoutes');
 const inventoryRoutes = require('./routes/inventoryRoutes');
 const profitRoutes = require('./routes/profitRoutes');
+const importRoutes = require('./routes/importRoutes'); // Add this line
 const { isOwner } = require('./middlewares/auth');
 const app = express();
 const crypto = require('crypto');
@@ -58,6 +59,7 @@ app.use('/', customerRoutes);
 app.use('/', supplierRoutes);
 app.use('/', inventoryRoutes);
 app.use('/profit', isOwner, profitRoutes);
+app.use('/', importRoutes);
 
 // MongoDB connect
 mongoose.connect('mongodb://localhost:27017/construction-store')

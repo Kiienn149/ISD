@@ -1,0 +1,108 @@
+<!-- views/partials/importForm.ejs -->
+<div class="main-container">
+    <h3>Thêm Phiếu Nhập Kho</h3>
+    <form action="/import/create" method="POST">
+      <!-- Tên nhà cung cấp -->
+      <label for="supplier">Nhà cung cấp:</label>
+      <input type="text" id="supplier" name="supplierName" list="suppliers" required>
+      <datalist id="suppliers">
+        <!-- Dữ liệu nhà cung cấp sẽ được điền qua JavaScript -->
+      </datalist><br><br>
+  
+      <!-- Tên sản phẩm -->
+      <label for="product">Sản phẩm:</label>
+      <input type="text" id="product" name="productName" list="products" required>
+      <datalist id="products">
+        <!-- Dữ liệu sản phẩm sẽ được điền qua JavaScript -->
+      </datalist><br><br>
+  
+      <!-- Số lượng -->
+      <label for="quantity">Số lượng:</label>
+      <input type="number" id="quantity" name="quantity" required><br><br>
+  
+      <!-- Kho nhập -->
+      <label for="warehouse">Kho nhập:</label>
+      <select id="warehouse" name="warehouse" required>
+        <option value="Kho 1">Kho 1</option>
+        <option value="Kho 2">Kho 2</option>
+      </select><br><br>
+  
+      <!-- Tình trạng -->
+      <label for="status">Tình trạng:</label>
+      <select id="status" name="status" required>
+        <option value="Đang xử lý">Đang xử lý</option>
+        <option value="Hoàn thành">Hoàn thành</option>
+      </select><br><br>
+  
+      <!-- Người nhập -->
+      <label for="user">Người nhập:</label>
+      <input type="text" id="user" name="user" required><br><br> <!-- user được lấy từ session -->
+  
+      <!-- Tổng tiền -->
+      <label for="total">Tổng tiền:</label>
+      <input type="number" id="total" name="totalAmount" readonly><br><br>
+  
+      <button type="submit">Lưu phiếu nhập</button>
+    </form>
+  </div>
+  
+  
+  <script>
+    // Tìm kiếm nhà cung cấp
+    document.addEventListener('DOMContentLoaded', function() {
+      const supplierInput = document.getElementById('supplier');
+      const productInput = document.getElementById('product');
+  
+      // Tìm kiếm nhà cung cấp
+      fetch('/import/search/suppliers')
+        .then(response => response.json())
+        .then(data => {
+          const suppliersList = document.getElementById('suppliers');
+          data.forEach(supplier => {
+            const option = document.createElement('option');
+            option.value = supplier.name;
+            suppliersList.appendChild(option);
+          });
+        });
+  
+      // Tìm kiếm sản phẩm
+      fetch('/import/search/products')
+        .then(response => response.json())
+        .then(data => {
+          const productsList = document.getElementById('products');
+          data.forEach(product => {
+            const option = document.createElement('option');
+            option.value = product.name;
+            productsList.appendChild(option);
+          });
+        });
+    });
+  
+    // Tính tổng tiền khi chọn sản phẩm và nhập số lượng
+    document.getElementById('product').addEventListener('change', function() {
+      const productName = encodeURIComponent(this.value);
+      const quantity = document.getElementById('quantity').value;
+  
+      if (productName) {
+        fetch(`/import/getPrice/${productName}`)
+          .then(response => response.json())
+          .then(data => {
+            if (data.price) {
+              const price = data.price;
+              document.getElementById('total').value = price * quantity;
+            }
+          })
+          .catch(error => console.error('Error:', error));
+      }
+    });
+  
+    // Tính lại tổng tiền khi thay đổi số lượng
+    document.getElementById('quantity').addEventListener('input', function() {
+      const price = document.getElementById('total').value / document.getElementById('quantity').value;
+      const quantity = this.value;
+      if (price && quantity) {
+        document.getElementById('total').value = price * quantity;
+      }
+    });
+  </script>
+  

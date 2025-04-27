@@ -1,0 +1,42 @@
+<!-- views/partials/importRecords.ejs -->
+<div class="main-container">
+  <h3>Danh sách phiếu nhập kho</h3>
+  <table>
+    <thead>
+      <tr>
+        <th>Mã phiếu nhập</th>
+        <th>Kho nhập</th>
+        <th>Tình trạng</th>
+        <th>Ngày nhập</th>
+        <th>Người nhập</th>
+        <th>Tổng tiền</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (importRecords.length === 0) { %>
+        <tr>
+          <td colspan="6" class="text-center">Chưa có phiếu nhập kho nào</td>
+        </tr>
+      <% } else { %>
+        <% importRecords.forEach(record => { %>
+          <tr>
+            <td><%= record.importId %></td>
+            <td><%= record.warehouse %></td>
+            <td><%= record.status %></td>
+            <td><%= new Date(record.date).toLocaleDateString('vi-VN') %></td>
+            <td><%= record.user %></td>
+            <td><%= record.totalAmount.toLocaleString('vi-VN') %> ₫</td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+  <button id="create-import-btn">Tạo phiếu nhập</button>
+</div>
+
+<script>
+  document.getElementById('create-import-btn').addEventListener('click', function() {
+    // Chuyển hướng đến trang importForm khi nhấn "Tạo phiếu nhập"
+    window.location.href = '/importForm';  // Đảm bảo rằng route /importForm đã được thiết lập trong app.js
+  });
+</script>
