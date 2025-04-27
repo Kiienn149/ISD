@@ -43,29 +43,36 @@ exports.getPrice = async (req, res) => {
 // controllers/importController.js
 exports.createImportRecord = async (req, res) => {
     try {
-      const { warehouse, status, user, totalAmount, products } = req.body;
-
+      const { warehouse, status, totalAmount, products } = req.body;
+  
+      const user = req.session.user.name;  // Lấy tên người nhập từ session
+  
+      // Kiểm tra nếu các trường bắt buộc có giá trị
+      if (!warehouse || !status || !user || !totalAmount) {
+        return res.status(400).json({ error: 'Các trường bắt buộc (warehouse, status, user, totalAmount) không được để trống.' });
+      }
+  
       // Kiểm tra nếu products là mảng và có dữ liệu
       if (!Array.isArray(products) || products.length === 0) {
         return res.status(400).json({ error: 'Không có sản phẩm để nhập kho' });
       }
-
+  
       let total = 0;  // Tổng tiền của phiếu nhập
-
+  
       // Lấy sản phẩm từ cơ sở dữ liệu và cập nhật số lượng
       const productData = [];
       for (const productDataItem of products) {
-        const product = await Product.findOne({ name: productDataItem.product }); // Tìm sản phẩm theo tên
+        const product = await Product.findOne({ name: productDataItem.product });
         if (product) {
           const productTotal = productDataItem.quantity * product.capital;  // Tính tổng tiền của sản phẩm (quantity * capital)
           total += productTotal;  // Cộng tổng tiền vào tổng của phiếu nhập
-
+  
           // Thêm sản phẩm vào danh sách phiếu nhập kho
           productData.push({
             product: product._id,
             quantity: productDataItem.quantity
           });
-
+  
           // Cập nhật số lượng sản phẩm trong kho
           product.quantity += productDataItem.quantity;
           await product.save();
@@ -73,7 +80,7 @@ exports.createImportRecord = async (req, res) => {
           return res.status(404).json({ error: `Sản phẩm ${productDataItem.product} không tồn tại` });
         }
       }
-
+  
       // Tạo phiếu nhập kho với tổng tiền đã tính
       const newImportRecord = new ImportRecord({
         importId: `PN${Date.now()}`,
@@ -83,17 +90,18 @@ exports.createImportRecord = async (req, res) => {
         totalAmount: total,  // Sử dụng tổng tiền tính được
         products: productData
       });
-
+  
       // Lưu phiếu nhập kho vào cơ sở dữ liệu
       await newImportRecord.save();
-
+  
       // Chuyển hướng đến trang danh sách phiếu nhập
       res.redirect('/import');  // Chuyển hướng đến trang danh sách phiếu nhập
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: 'Lỗi khi tạo phiếu nhập kho' });
     }
-};
+  };
+  
 
 
 
