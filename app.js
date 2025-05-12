@@ -61,6 +61,7 @@ app.use('/', inventoryRoutes);
 app.use('/profit', isOwner, profitRoutes);
 app.use('/', importRoutes);
 
+
 // MongoDB connect
 mongoose.connect('mongodb://localhost:27017/construction-store')
   .then(() => {
@@ -77,6 +78,11 @@ app.get('/home', (req, res) => {
 app.get('/import/create', (req, res) => {
   res.render('layout', { body: 'import/create' });
 });
+
+app.get('/home-partial', (req, res) => {
+  res.render('home'); // Đã có file views/home.ejs
+});
+
 
 
 

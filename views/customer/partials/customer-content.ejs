@@ -1,0 +1,153 @@
+<div id="main-content">
+
+  <h1>Quản lý Khách hàng và Nhà cung cấp</h1>
+
+  <div class="tab">
+    <div id="customers-tab" class="active">Khách hàng</div>
+    <div id="suppliers-tab">Nhà cung cấp</div>
+  </div>
+
+  <!-- Khách hàng -->
+  <div id="customers-content" class="tab-content active">
+    <h2>Danh sách Khách hàng</h2>
+    <input type="text" class="search-bar" placeholder="Tìm kiếm khách hàng..." />
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#customer-modal">+ Tạo khách hàng</button>
+
+    <% if (error_message) { %>
+      <div class="alert alert-danger"><%= error_message %></div>
+    <% } %>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mã KH</th>
+          <th>Tên KH</th>
+          <th>Điện thoại</th>
+          <th>Địa chỉ</th>
+          <th>Lần cuối mua hàng</th>
+          <th>Tổng tiền hàng</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% customers.forEach(function(customer) { %>
+          <tr>
+            <td><%= customer.customerId %></td>
+            <td><%= customer.name %></td>
+            <td><%= customer.phone %></td>
+            <td><%= customer.address %></td>
+            <td><%= customer.lastPurchaseDate ? customer.lastPurchaseDate.toLocaleDateString('vi-VN') : 'Chưa xác định' %></td>
+            <td><%= customer.totalPurchaseAmount.toLocaleString('vi-VN') %> ₫</td>
+            <td>
+              <a href="/customer/edit/<%= customer._id %>">Sửa</a> |
+              <a href="/customer/delete/<%= customer._id %>">Xóa</a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <div class="footer-stats">
+      <p>Số khách hàng: <%= customers.length %> | Tổng tiền hàng: <%= totalPurchaseAmount.toLocaleString('vi-VN') %> ₫ | Tổng nợ: <%= totalDebt.toLocaleString('vi-VN') %> ₫</p>
+    </div>
+  </div>
+
+  <!-- Nhà cung cấp -->
+  <div id="suppliers-content" class="tab-content">
+    <h2>Danh sách Nhà cung cấp</h2>
+    <input type="text" class="search-bar" placeholder="Tìm kiếm nhà cung cấp..." />
+    <button class="btn" onclick="openSupplierModal()">Tạo nhà cung cấp</button>
+
+    <% if (error_message) { %>
+      <div class="alert alert-danger"><%= error_message %></div>
+    <% } %>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mã NCC</th>
+          <th>Tên NCC</th>
+          <th>Điện thoại</th>
+          <th>Địa chỉ</th>
+          <th>Lần cuối nhập hàng</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% suppliers.forEach(function(supplier) { %>
+          <tr>
+            <td><%= supplier.supplierId %></td>
+            <td><%= supplier.name %></td>
+            <td><%= supplier.phone %></td>
+            <td><%= supplier.address %></td>
+            <td><%= supplier.lastPurchaseDate %></td>
+            <td>
+              <a href="/supplier/edit/<%= supplier._id %>">Sửa</a> |
+              <a href="/supplier/delete/<%= supplier._id %>">Xóa</a>
+            </td>
+          </tr>
+        <% }); %>
+      </tbody>
+    </table>
+
+    <div class="footer-stats">
+      <p>Số nhà cung cấp: <%= suppliers.length %> | Tổng nợ: <%= totalDebt %></p>
+    </div>
+  </div>
+
+  <!-- MODAL Bootstrap: Tạo khách hàng -->
+  <div class="modal fade" id="customer-modal" tabindex="-1" aria-labelledby="customerModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form action="/customer/create" method="POST" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="customerModalLabel">Tạo mới khách hàng</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <input class="form-control mb-2" name="customerId" placeholder="Mã khách hàng" required>
+          <input class="form-control mb-2" name="name" placeholder="Tên khách hàng" required>
+          <input class="form-control mb-2" name="phone" placeholder="Số điện thoại" required>
+          <input class="form-control mb-2" name="email" type="email" placeholder="Email" required>
+          <input class="form-control mb-2" name="address" placeholder="Địa chỉ">
+          <textarea class="form-control mb-2" name="note" placeholder="Ghi chú"></textarea>
+          <input class="form-control mb-2" type="date" name="dob">
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" value="male" checked> Nam
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="gender" value="female"> Nữ
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Lưu</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ qua</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('customers-tab').addEventListener('click', function() {
+      document.getElementById('customers-tab').classList.add('active');
+      document.getElementById('suppliers-tab').classList.remove('active');
+      document.getElementById('customers-content').classList.add('active');
+      document.getElementById('suppliers-content').classList.remove('active');
+    });
+
+    document.getElementById('suppliers-tab').addEventListener('click', function() {
+      document.getElementById('suppliers-tab').classList.add('active');
+      document.getElementById('customers-tab').classList.remove('active');
+      document.getElementById('suppliers-content').classList.add('active');
+      document.getElementById('customers-content').classList.remove('active');
+    });
+
+    function openSupplierModal() {
+      document.getElementById('supplier-modal').style.display = "block";
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = "none";
+    }
+  </script>
+
+</div>

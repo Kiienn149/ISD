@@ -1,3 +1,4 @@
+<% if (!user) { user = { name: 'Ẩn danh', role: 'guest' }; } %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -88,27 +89,26 @@
     <a href="#" id="home-link">Trang Chủ</a>
     <a href="#" id="order-link">Tạo đơn hàng</a>
     <a href="/products" data-link>Sản phẩm</a>
-    <a href="/customer" >Khách hàng</a>
+    <a href="/customer">Khách hàng</a>
     <a href="/import">Nhập kho</a>
     <a href="/inventory" data-link>Tồn kho</a>
     <a href="#">Doanh số</a>
     <a href="#">Thu chi</a>
     <a href="/profit" data-link>Lợi nhuận</a>
 
-    <% if (user.role === 'owner') { %>
-      <li><a href="/settings">⚙️ Thiết lập</a></li>
+    <% if (user?.role === 'owner') { %>
+      <a href="/settings">⚙️ Thiết lập</a>
     <% } %>
-  </ul>
   </div>
 
   <div class="topbar">
     <div><strong>💼 QUẢN LÝ BÁN HÀNG VLXD</strong></div>
     <p style="margin-top: 30px; font-weight: 500; color: #e2e6ea;">
-      🔐 Bạn đang đăng nhập với quyền: <strong><%= user.role %></strong>
+      🔐 Bạn đang đăng nhập với quyền: <strong><%= user?.role %></strong>
     </p>
     <div class="header-bar">
       <div class="user-dropdown">
-        <span class="user-name">🔥 Xin chào, <b><%= user.name %></b> (<%= user.role %>) ▼</span>
+        <span class="user-name">🔥 Xin chào, <b><%= user?.name %></b> (<%= user?.role %>) ▼</span>
         <div class="dropdown-menu">
           <a href="/account">Tài khoản</a>
           <a href="/logout">Đăng xuất</a>
@@ -155,19 +155,16 @@
     </div>
 
     <script>
-      // Thêm mã JavaScript của bạn vào đây
       document.addEventListener('DOMContentLoaded', function () {
         const createOrderBtn = document.getElementById('create-order-btn');
-        
         if (createOrderBtn) {
           createOrderBtn.addEventListener('click', function () {
             const form = document.getElementById('add-order-form');
-            form.style.display = form.style.display === 'none' ? 'block' : 'none'; // Ẩn/hiện form
+            form.style.display = form.style.display === 'none' ? 'block' : 'none';
           });
         }
 
         const exportExcelBtn = document.getElementById('export-excel');
-        
         if (exportExcelBtn) {
           exportExcelBtn.addEventListener('click', () => {
             alert('Chức năng xuất Excel đang phát triển!');
@@ -175,17 +172,15 @@
         }
       });
     </script>
-
   </div>
 
   <script>
-    // Đảm bảo phần tử tồn tại trước khi gán sự kiện
     $(document).ready(function() {
       if ($('#order-link').length) {
         $('#order-link').click(function (e) {
           e.preventDefault();
-          $.get('/order/partials/order', function (data) {  // Đảm bảo đường dẫn đúng
-            $('#main-content').html(data); // ✅ Không hide, không xài dynamic-content
+          $.get('/order/partials/order', function (data) {
+            $('#main-content').html(data);
           });
         });
       }
@@ -193,11 +188,10 @@
       if ($('#home-link').length) {
         $('#home-link').click(function (e) {
           e.preventDefault();
-          location.reload(); // ✅ Reload lại trang chủ để hiện dashboard gốc
+          location.reload();
         });
       }
     });
   </script>
-
 </body>
 </html>
