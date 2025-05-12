@@ -48,28 +48,27 @@ exports.deleteEmployee = async (req, res) => {
     res.redirect('/settings');
   }
 };
-// File: controllers/settingsController.js
+exports.createEmployeeForm = (req, res) => {
+  res.render('create-employee', { user: req.session.user });
+};
+
 
 exports.createEmployee = async (req, res) => {
-  const { name, email, role, isActive } = req.body;
-
+  const { name, email, phone, role, isActive, password } = req.body;
   try {
-    // Chuyển isActive từ 'on' thành true, các giá trị khác thành false
-    const isActiveBoolean = isActive === 'on'; // 'on' => true, bất kỳ giá trị nào khác => false
-
-    // Kiểm tra email trùng lặp
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       req.flash('error', 'Email đã tồn tại, vui lòng chọn email khác');
       return res.redirect('/settings/create');
     }
 
-    // Tạo nhân viên mới
     const newUser = new User({
       name,
       email,
+      phone,
       role,
-      isActive: isActiveBoolean // Lưu giá trị Boolean cho isActive
+      isActive,
+      password
     });
 
     await newUser.save();
@@ -81,6 +80,7 @@ exports.createEmployee = async (req, res) => {
     res.redirect('/settings/create');
   }
 };
+
 
 exports.updateEmployee = async (req, res) => {
   const { id } = req.params;

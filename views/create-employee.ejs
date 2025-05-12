@@ -20,25 +20,42 @@
 
   <div class="dashboard">
     <h3>Tạo nhân viên mới</h3>
+    <% if (success_message && success_message.length > 0) { %>
+      <div class="alert alert-success"><%= success_message[0] %></div>
+    <% } %>
+
+    <% if (error_message && error_message.length > 0) { %>
+      <div class="alert alert-danger"><%= error_message[0] %></div>
+    <% } %>
+    
     <form action="/settings/create" method="POST">
       <div>
         <label for="name">Tên nhân viên:</label>
-        <input type="text" id="name" name="name" required>
+        <input type="text" id="name" name="name" required
+        oninvalid="this.setCustomValidity('Vui lòng nhập tên hiển thị')"
+        oninput="this.setCustomValidity('')" />
       </div>
 
       <div>
         <label for="email">Email:</label>
-        <input type="email" id="email" name="email" required>
+        <input type="email" id="email" name="email" required
+        oninvalid="this.setCustomValidity('Vui lòng nhập email')"
+        oninput="this.setCustomValidity('')" />
       </div>
 
       <div>
         <label for="phone">Số điện thoại:</label>
-        <input type="text" id="phone" name="phone" required>
+        <input type="text" id="phone" name="phone" required
+        oninvalid="this.setCustomValidity('Vui lòng nhập số điện thoại')"
+        oninput="this.setCustomValidity('')"
+        />
       </div>
 
       <div>
         <label for="password">Mật khẩu:</label>
-        <input type="password" id="password" name="password" required>
+        <input type="password" id="password" name="password" required
+        oninvalid="this.setCustomValidity('Vui lòng nhập mật khẩu')"
+        oninput="this.setCustomValidity('')"/>
       </div>
 
       <div>
