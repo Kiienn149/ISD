@@ -133,18 +133,22 @@ app.post('/forgot', async (req, res) => {
       return res.redirect('/forgot');
     }
 
-    // Tạo một mật khẩu ngẫu nhiên
-    const randomPassword = crypto.randomBytes(8).toString('hex'); // Tạo mật khẩu ngẫu nhiên 16 ký tự
 
-    // Cập nhật mật khẩu mới vào cơ sở dữ liệu (mã hóa mật khẩu nếu cần)
+    // Tạo mật khẩu ngẫu nhiên
+    const randomPassword = crypto.randomBytes(8).toString('hex');
+    console.log('Generated random password:', randomPassword);  // In ra mật khẩu
+
+    // Mã hóa mật khẩu
     user.password = await bcrypt.hash(randomPassword, 10);
+    console.log('Hashed password:', user.password);  // In ra mật khẩu đã mã hóa
+
     await user.save();
 
     // Gửi email
     const mailOptions = {
       from: 'nguyentrungkienhs2004@gmail.com', 
       to: email,
-      subject: 'Mật khẩu mới của bạn',
+      subject: 'Khôi phục mật khẩu',
       text: `Mật khẩu mới của bạn là: ${randomPassword}`
     };
 
@@ -157,7 +161,7 @@ app.post('/forgot', async (req, res) => {
     });
 
     req.flash('success', 'Mật khẩu mới đã được gửi tới email của bạn.');
-    res.redirect('/login');
+    res.redirect('/forgot');
   } catch (err) {
     console.error('Lỗi khi thay đổi mật khẩu:', err);
     req.flash('error', 'Đã có lỗi xảy ra khi thay đổi mật khẩu');

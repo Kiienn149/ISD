@@ -114,3 +114,19 @@ exports.updateSupplier = async (req, res) => {
     res.redirect('/supplier');
   }
 };
+exports.deleteSupplier = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const supplier = await Supplier.findByIdAndDelete(id);
+    if (!supplier) {
+      req.flash('error', 'Nhà cung cấp không tồn tại');
+      return res.redirect('/supplier');
+    }
+    req.flash('success', 'Bạn đã xóa nhà cung cấp thành công');
+    res.redirect('/supplier');  // Trở lại trang danh sách nhà cung cấp
+  } catch (err) {
+    console.log(err);
+    req.flash('error', 'Không thể xóa nhà cung cấp');
+    res.redirect('/supplier');
+  }
+};
