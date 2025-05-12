@@ -1,27 +1,32 @@
-<div class="import-form">
-    <h2>Thêm Phiếu Nhập Kho</h2>
-    <form action="/import/create" method="POST">
-      <label>Kho nhập:
-        <input type="text" name="warehouse" required>
-      </label>
-  
-      <label>Tình trạng:
-        <select name="status" required>
-          <option value="Đang xử lý">Đang xử lý</option>
-          <option value="Hoàn tất">Hoàn tất</option>
-        </select>
-      </label>
-  
-      <label>Tổng tiền:
-        <input type="number" name="totalAmount" required>
-      </label>
-  
-      <label>Sản phẩm (JSON):
-        <textarea name="products" rows="4" placeholder='[{"product":"Xi măng","quantity":10}]'></textarea>
-      </label>
-  
-      <button type="submit">Lưu phiếu nhập</button>
-      <a href="/import" class="ajax-link" style="margin-left: 10px;">⬅ Quay lại danh sách</a>
-    </form>
+<div class="import-form" style="max-width: 600px; margin: 0 auto;">
+  <h2>Thêm Phiếu Nhập Kho</h2>
+  <form action="/import/create" method="POST">
+    <label>Kho nhập:
+      <input type="text" name="warehouse" required>
+    </label>
+
+    <label>Tình trạng:
+      <select name="status" required>
+        <option value="Đang xử lý">Đang xử lý</option>
+        <option value="Hoàn tất">Hoàn tất</option>
+      </select>
+    </label>
+
+    <label>Tổng tiền:
+      <input type="number" name="totalAmount" required min="0" step="1000">
+    </label>
+
+    <label>Sản phẩm (nhập JSON hợp lệ):
+      <textarea name="products" rows="5" required placeholder='Ví dụ: [{"product": "Xi măng", "quantity": 10}]'></textarea>
+    </label>
+
+    <button type="submit" class="btn btn-success">💾 Lưu phiếu nhập</button>
+    <a href="/import" class="btn btn-secondary ajax-link" style="margin-left: 10px;">⬅ Quay lại danh sách</a>
+  </form>
+
+  <div style="margin-top: 20px; font-size: 0.9em; color: gray;">
+    📌 <strong>Lưu ý:</strong> Sản phẩm cần nhập đúng định dạng JSON như ví dụ.
+    <br>
+    Mỗi phần tử gồm tên sản phẩm `"product"` và số lượng `"quantity"` (dạng số).
   </div>
-  
+</div>
