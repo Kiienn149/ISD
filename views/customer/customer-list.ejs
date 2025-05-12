@@ -67,8 +67,11 @@
             <td><%= customer.totalPurchaseAmount.toLocaleString('vi-VN') %> ₫</td>
             <td>
               <a href="/customer/edit/<%= customer._id %>">Sửa</a> |
-              <a href="/customer/delete/<%= customer._id %>">Xóa</a>
+              <form action="/customer/delete/<%= customer._id %>" method="POST" style="display:inline;" onsubmit="confirmDelete(event, '<%= customer._id %>')">
+                <button type="submit">Xóa</button>
+              </form>
             </td>
+
           </tr>
         <% }); %>
       </tbody>
@@ -108,10 +111,12 @@
             <td><%= supplier.phone %></td>
             <td><%= supplier.address %></td>
             <td><%= supplier.lastPurchaseDate %></td>
-            <td>
-              <a href="/supplier/edit/<%= supplier._id %>">Sửa</a> |
-              <a href="/supplier/delete/<%= supplier._id %>">Xóa</a>
-            </td>
+              <td>
+                <a href="/supplier/edit/<%= supplier._id %>">Sửa</a> |
+                <form action="/supplier/delete/<%= supplier._id %>" method="POST" style="display:inline;" onsubmit="confirmDelete(event, '<%= supplier._id %>')">
+                  <button type="submit">Xóa</button>
+                </form>
+              </td>
           </tr>
         <% }); %>
       </tbody>
@@ -176,5 +181,18 @@
       document.getElementById(modalId).style.display = "none";
     }
   </script>
+  <script>
+  // Xác nhận xóa khách hàng
+  function confirmDelete(event, customerId) {
+    // Hiển thị hộp thoại xác nhận
+    const isConfirmed = window.confirm('Bạn chắc chắn muốn xóa khách hàng này?');
+
+    // Nếu người dùng nhấn "OK", tiếp tục gửi form, nếu không, hủy
+    if (!isConfirmed) {
+      event.preventDefault();  // Ngừng hành động xóa
+    }
+  }
+</script>
+
 </body>
 </html>

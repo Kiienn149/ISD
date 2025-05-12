@@ -10,12 +10,13 @@
     <h2 class="auth-title">QUÊN MẬT KHẨU</h2>
 
     <!-- Hiển thị lỗi nếu có -->
-    <% if (messages.error) { %>
-      <div class="error-message"><%= messages.error[0] %></div>
+    <% if (error_message && error_message.length > 0) { %>
+      <div class="flash-error"><%= error_message[0] %></div>
     <% } %>
+    
 
-    <!-- Hiển thị thông báo thành công nếu có -->
-    <% if (messages.success) { %>
+    <!-- Hiển thị thông báo lỗi nếu có -->
+    <% if (messages.success && messages.success.length > 0) { %>
       <div class="success-message"><%= messages.success[0] %></div>
     <% } %>
 

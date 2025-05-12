@@ -176,4 +176,21 @@ exports.updateCustomer = async (req, res) => {
     req.flash('error', 'Đã có lỗi khi cập nhật thông tin khách hàng');
     res.redirect(`/customer/edit/${id}`);
   }
+}
+// Xóa khách hàng
+exports.deleteCustomer = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const customer = await Customer.findByIdAndDelete(id);
+    if (!customer) {
+      req.flash('error', 'Khách hàng không tồn tại');
+      return res.redirect('/customer');
+    }
+    req.flash('success', 'Bạn đã xóa khách hàng thành công');
+    res.redirect('/customer');  // Trở lại trang danh sách khách hàng
+  } catch (err) {
+    console.log(err);
+    req.flash('error', 'Không thể xóa khách hàng');
+    res.redirect('/customer');
+  }
 };

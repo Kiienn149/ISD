@@ -42,7 +42,7 @@
             <td><%= user.isActive ? 'Hoạt động' : 'Tạm ngừng' %></td>
             <td>
               <a href="/settings/edit/<%= user._id %>">Sửa</a> | 
-              <form action="/settings/delete/<%= user._id %>" method="POST" style="display:inline;">
+              <form action="/settings/delete/<%= user._id %>" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">
                 <button type="submit">Xóa</button>
               </form>
             </td>
@@ -51,5 +51,18 @@
       </tbody>
     </table>
   </div>
+
+  <script>
+    // Xác nhận xóa nhân viên
+    function confirmDelete(event) {
+      // Hiển thị hộp thoại xác nhận
+      const isConfirmed = window.confirm('Bạn chắc chắn muốn xóa');
+
+      // Nếu người dùng nhấn "OK", tiếp tục gửi form, nếu không, hủy
+      if (!isConfirmed) {
+        event.preventDefault();  // Ngừng hành động xóa
+      }
+    }
+  </script>
 </body>
 </html>
