@@ -1,21 +1,20 @@
-// routes/importRoutes.js
 const express = require('express');
 const router = express.Router();
 const importController = require('../controllers/importController');
 const { isOwner } = require('../middlewares/auth'); // Middleware để chỉ owner mới được truy cập
 
-// Hiển thị danh sách phiếu nhập kho
-router.get('/import', importController.getImportRecords);  // Route để hiển thị danh sách phiếu nhập
+// ✅ Hiển thị danh sách phiếu nhập kho
+router.get('/import', importController.getImportRecords);
 
-// Route để tạo phiếu nhập kho (chỉ cho phép owner)
-router.get('/importForm', isOwner, (req, res) => {
-  res.render('partials/importForm');  // Chuyển đến form tạo phiếu nhập
-});
+// ✅ Hiển thị giao diện tạo phiếu nhập (SPA-friendly)
+router.get('/import/create', isOwner, importController.getImportForm);
 
-// Các route khác
+// ✅ API lấy dữ liệu phụ trợ
 router.get('/import/search/suppliers', importController.searchSuppliers);
 router.get('/import/search/products', importController.searchProducts);
 router.get('/import/getPrice/:productName', importController.getPrice);
-router.post('/import/create', isOwner, importController.createImportRecord);  // Route để tạo phiếu nhập kho
+
+// ✅ Xử lý tạo phiếu nhập
+router.post('/import/create', isOwner, importController.createImportRecord);
 
 module.exports = router;

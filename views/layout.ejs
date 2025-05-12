@@ -3,14 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <title>Trang quản lý hệ thống</title>
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
-  <div class="sidebar">
-    <%- include('partials/sidebar') %> <!-- Sidebar sẽ không thay đổi -->
+  <div class="wrapper" style="display: flex;">
+    <%- include('partials/sidebar') %>
+
+    <!-- Nội dung động -->
+    <div id="main-content" style="flex: 1; padding: 20px;">
+      <%- include(body) %>
+    </div>
   </div>
 
-  <div class="content">
-    <%- body %> <!-- Nội dung thay đổi -->
-  </div>
+  <!-- Script hỗ trợ AJAX -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      function attachAjaxLinks() {
+        document.querySelectorAll('.ajax-link').forEach(link => {
+          link.addEventListener('click', function (e) {
+            e.preventDefault();
+            fetch(link.href)
+              .then(res => res.text())
+              .then(html => {
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const newContent = doc.querySelector('#main-content').innerHTML;
+                document.querySelector('#main-content').innerHTML = newContent;
+                history.pushState(null, '', link.href);
+                attachAjaxLinks();
+              });
+          });
+        });
+      }
+
+      attachAjaxLinks();
+    });
+  </script>
 </body>
 </html>

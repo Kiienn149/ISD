@@ -74,29 +74,11 @@ app.get('/home', (req, res) => {
   res.render('home', { user: req.session.user });
 });
 
-// Route: GET login
-app.get('/login', (req, res) => {
-  res.render('login', { messages: req.flash() });
+app.get('/import/create', (req, res) => {
+  res.render('layout', { body: 'import/create' });
 });
 
-app.post('/login', async (req, res) => {
-  const { email, password } = req.body;
-  const user = await User.findOne({ email });
 
-  if (!user) {
-    req.flash('error', 'Tài khoản đăng nhập không hợp lệ');
-    return res.redirect('/login');
-  }
-
-  const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) {
-    req.flash('error', 'Mật khẩu không chính xác');
-    return res.redirect('/login');
-  }
-
-  req.session.user = user; // Lưu thông tin người dùng vào session
-  res.redirect('/home');
-});
 
 // Route: GET /register
 app.get('/register', (req, res) => {

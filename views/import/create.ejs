@@ -1,0 +1,27 @@
+<div class="import-form">
+    <h2>Thêm Phiếu Nhập Kho</h2>
+    <form action="/import/create" method="POST">
+      <label>Kho nhập:
+        <input type="text" name="warehouse" required>
+      </label>
+  
+      <label>Tình trạng:
+        <select name="status" required>
+          <option value="Đang xử lý">Đang xử lý</option>
+          <option value="Hoàn tất">Hoàn tất</option>
+        </select>
+      </label>
+  
+      <label>Tổng tiền:
+        <input type="number" name="totalAmount" required>
+      </label>
+  
+      <label>Sản phẩm (JSON):
+        <textarea name="products" rows="4" placeholder='[{"product":"Xi măng","quantity":10}]'></textarea>
+      </label>
+  
+      <button type="submit">Lưu phiếu nhập</button>
+      <a href="/import" class="ajax-link" style="margin-left: 10px;">⬅ Quay lại danh sách</a>
+    </form>
+  </div>
+  

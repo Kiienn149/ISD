@@ -40,19 +40,27 @@ exports.showLoginForm = (req, res) => {
   res.render('login', { messages: req.flash() });
 };
 
-// Đăng nhập
+
+// Hiển thị form đăng nhập
 exports.login = async (req, res) => {
   const { email, password } = req.body;
   const user = await User.findOne({ email });
 
-  if (!user || !(await bcrypt.compare(password, user.password))) {
-    req.flash('error', 'Email hoặc mật khẩu không đúng');
+  if (!user) {
+    req.flash('error', 'Tài khoản đăng nhập không hợp lệ');
+    return res.redirect('/login');
+  }
+
+  const isMatch = await bcrypt.compare(password, user.password);
+  if (!isMatch) {
+    req.flash('error', 'Mật khẩu không đúng');
     return res.redirect('/login');
   }
 
   req.session.user = user;
   res.redirect('/home');
 };
+
 
 // Đăng xuất
 exports.logout = (req, res) => {

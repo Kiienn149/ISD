@@ -10,9 +10,10 @@
     <h2 class="auth-title">🔒 Đăng nhập</h2>
 
     <!-- Hiển thị lỗi nếu có -->
-    <% if (messages.error && messages.error.length > 0) { %>
-      <div class="flash-error"><%= messages.error[0] %></div>
+    <% if (error_message && error_message.length > 0) { %>
+      <div class="flash-error"><%= error_message[0] %></div>
     <% } %>
+    
 
     <!-- Hiển thị thông báo lỗi nếu có -->
     <% if (messages.success && messages.success.length > 0) { %>

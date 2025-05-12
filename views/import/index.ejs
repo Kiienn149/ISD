@@ -1,0 +1,56 @@
+<div class="page-header">
+    <h2>Danh sách phiếu nhập</h2>
+    <a href="/import/create" class="btn btn-primary ajax-link">+ Tạo phiếu nhập</a>
+  </div>
+  
+  <div class="filter-bar">
+    <input type="text" placeholder="Nhập mã phiếu nhập để tìm kiếm">
+    <select><option>Phiếu nhập</option></select>
+    <input type="date" value="2025-05-04">
+    <span>đến</span>
+    <input type="date" value="2025-05-10">
+    <button class="btn btn-search">🔍 Tìm kiếm</button>
+    <div class="filter-range">
+      <button>Tuần</button><button>Tháng</button><button>Quý</button>
+    </div>
+  </div>
+  
+  <table class="table-imports">
+    <thead>
+      <tr>
+        <th>Mã phiếu nhập</th>
+        <th>Kho nhập</th>
+        <th>Tình trạng</th>
+        <th>Ngày nhập</th>
+        <th>Người nhập</th>
+        <th>Tổng tiền</th>
+        <th>Nợ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% if (importRecords.length === 0) { %>
+        <tr><td colspan="7" style="text-align: center;">Không có dữ liệu</td></tr>
+      <% } else { %>
+        <% importRecords.forEach(record => { %>
+          <tr>
+            <td><%= record.importId %></td>
+            <td><%= record.warehouse %></td>
+            <td><%= record.status %></td>
+            <td><%= record.createdAt.toLocaleDateString() %></td>
+            <td><%= record.user %></td>
+            <td><%= record.totalAmount.toLocaleString() %></td>
+            <td>0</td>
+          </tr>
+        <% }) %>
+      <% } %>
+    </tbody>
+  </table>
+  
+  <div class="import-summary">
+    Tổng số phiếu nhập: <span class="bold red"><%= importRecords.length %></span> &nbsp;
+    Tổng tiền: <span class="bold red">
+      <%= importRecords.reduce((sum, r) => sum + r.totalAmount, 0).toLocaleString() %>
+    </span> &nbsp;
+    Tổng nợ: <span class="bold red">0</span>
+  </div>
+  
