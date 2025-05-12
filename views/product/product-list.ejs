@@ -146,7 +146,7 @@
             <td>
               <a href="/products/detail/<%= product._id %>">Xem</a>
               <a href="/products/edit/<%= product._id %>">Sửa</a>
-              <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;">
+              <form action="/products/delete/<%= product._id %>" method="POST" style="display:inline;" onsubmit="confirmDelete(event, '<%= product._id %>')">
                 <button type="submit">Xóa</button>
               </form>
             </td>
@@ -154,6 +154,18 @@
         <% }); %>
       </tbody>
     </table>
+    <script>
+      // Xác nhận xóa sản phẩm
+      function confirmDelete(event, productId) {
+        // Hiển thị hộp thoại xác nhận
+        const isConfirmed = window.confirm('Bạn chắc chắn muốn xóa sản phẩm này?');
+
+        // Nếu người dùng nhấn "OK", tiếp tục gửi form, nếu không, hủy
+        if (!isConfirmed) {
+          event.preventDefault();  // Ngừng hành động xóa
+        }
+      }
+    </script>
     <p>Số sản phẩm: <%= products.length %></p>
     <a href="/products/create">Tạo sản phẩm mới</a>
   </div>
