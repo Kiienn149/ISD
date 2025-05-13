@@ -124,13 +124,13 @@ exports.editSupplier = async (req, res) => {
     const supplier = await Supplier.findById(req.params.id);
     if (!supplier) {
       req.flash('error', 'Nhà cung cấp không tồn tại');
-      return res.redirect('/supplier');
+      return res.redirect('/customer');
     }
-    res.render('supplier/edit-supplier', { supplier });
+    res.render('/customer/edit-supplier', { supplier });
   } catch (err) {
     console.log(err);
     req.flash('error', 'Không thể chỉnh sửa nhà cung cấp');
-    res.redirect('/supplier');
+    res.redirect('/customer');
   }
 };
 
@@ -143,7 +143,7 @@ exports.updateSupplier = async (req, res) => {
     const supplier = await Supplier.findById(id);
     if (!supplier) {
       req.flash('error', 'Không tìm thấy nhà cung cấp');
-      return res.redirect('/supplier');
+      return res.redirect('/customer');
     }
 
     supplier.supplierId = supplierId || supplier.supplierId;
@@ -159,7 +159,7 @@ exports.updateSupplier = async (req, res) => {
   } catch (error) {
     console.log(error);
     req.flash('error', 'Đã có lỗi khi cập nhật thông tin nhà cung cấp');
-    res.redirect('/supplier');
+    res.redirect('/customer');
   }
 };
 exports.deleteSupplier = async (req, res) => {
@@ -168,13 +168,13 @@ exports.deleteSupplier = async (req, res) => {
     const supplier = await Supplier.findByIdAndDelete(id);
     if (!supplier) {
       req.flash('error', 'Nhà cung cấp không tồn tại');
-      return res.redirect('/supplier');
+      return res.redirect('/customer');
     }
     req.flash('success', 'Bạn đã xóa nhà cung cấp thành công');
-    res.redirect('/supplier');  // Trở lại trang danh sách nhà cung cấp
+    res.redirect('/customer');  // Trở lại trang danh sách nhà cung cấp
   } catch (err) {
     console.log(err);
     req.flash('error', 'Không thể xóa nhà cung cấp');
-    res.redirect('/supplier');
+    res.redirect('/customer');
   }
 };

@@ -159,6 +159,7 @@ exports.updateCustomer = async (req, res) => {
       email: email || 'chưa có'
     };
 
+    // Cập nhật thông tin khách hàng
     customer.customerId = customerId || customer.customerId;
     customer.name = name || customer.name;
     customer.phone = requiredFields.phone;
@@ -169,14 +170,17 @@ exports.updateCustomer = async (req, res) => {
     customer.gender = gender || customer.gender;
 
     await customer.save();
-    req.flash('success', 'Thông tin khách hàng đã được cập nhật');
-    res.redirect('/customer');
+    
+    // Hiển thị thông báo thành công
+    req.flash('success', 'Bạn đã cập nhật khách hàng thành công');
+    res.redirect('/customer'); // Redirect đến trang danh sách khách hàng
   } catch (error) {
     console.log(error);
     req.flash('error', 'Đã có lỗi khi cập nhật thông tin khách hàng');
-    res.redirect(`/customer/edit/${id}`);
+    res.redirect(`/customer/edit/${id}`); // Quay lại trang chỉnh sửa khách hàng
   }
 }
+
 // Xóa khách hàng
 exports.deleteCustomer = async (req, res) => {
   const { id } = req.params;

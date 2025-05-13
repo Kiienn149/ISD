@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Chỉnh sửa Nhà Cung Cấp</title>
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+  <div class="sidebar">
+    <a href="/settings" class="active">Thiết lập</a>
+    <a href="#">Mẫu hóa đơn</a>
+  </div>
+
+  <div class="topbar">
+    <div>💼 QUẢN LÝ BÁN HÀNG VLXD</div>
+    <p>Xin chào, <%= currentUser.name %> (<%= currentUser.role %>)</p>
+  </div>
+
+  <div class="dashboard">
+    <h3>Chỉnh sửa Nhà Cung Cấp</h3>
+
+    <!-- Hiển thị thông báo thành công hoặc lỗi -->
+    <% if (messages.success) { %>
+      <div class="alert alert-success"><%= messages.success %></div>
+    <% } %>
+    <% if (messages.error) { %>
+      <div class="alert alert-danger"><%= messages.error %></div>
+    <% } %>
+
+    <form action="/supplier/update/<%= supplier._id %>" method="POST">
+      <div>
+        <label for="supplierId">Mã Nhà Cung Cấp:</label>
+        <input type="text" id="supplierId" name="supplierId" value="<%= supplier.supplierId %>" required disabled>
+      </div>
+
+      <div>
+        <label for="name">Tên Nhà Cung Cấp:</label>
+        <input type="text" id="name" name="name" value="<%= supplier.name %>" required>
+      </div>
+
+      <div>
+        <label for="phone">Số điện thoại:</label>
+        <input type="text" id="phone" name="phone" value="<%= supplier.phone %>" required>
+      </div>
+
+      <div>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" value="<%= supplier.email %>" required>
+      </div>
+
+      <div>
+        <label for="address">Địa chỉ:</label>
+        <input type="text" id="address" name="address" value="<%= supplier.address %>" required>
+      </div>
+
+      <div>
+        <label for="note">Ghi chú:</label>
+        <textarea id="note" name="note"><%= supplier.note %></textarea>
+      </div>
+
+      <div>
+        <button type="submit">Lưu thay đổi</button>
+      </div>
+    </form>
+  </div>
+</body>
+</html>

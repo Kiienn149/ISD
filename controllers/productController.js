@@ -112,7 +112,7 @@ exports.editProduct = async (req, res) => {
     product.manufacturer = manufacturer || product.manufacturer;
 
     await product.save();
-    req.flash('success', 'Sản phẩm đã được cập nhật');
+    req.flash('success', 'Cập nhật sản phẩm thành công');
     res.redirect('/products');
   } catch (err) {
     console.error('Lỗi khi cập nhật sản phẩm:', err);

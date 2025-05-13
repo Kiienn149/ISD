@@ -8,23 +8,20 @@
   <h1>Chỉnh sửa thông tin khách hàng</h1>
   <form action="/customer/update/<%= customer._id %>" method="POST">
 
-
     <label for="name">Tên khách hàng:</label>
-    <input type="text" id="name" name="name" value="<%= customer.name %>" required><br>
+    <input type="text" id="name" name="name" value="<%= customer.name %>" required oninvalid="this.setCustomValidity('Tên khách hàng không được để trống')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
     <label for="phone">Số điện thoại:</label>
-    <input type="text" id="phone" name="phone" value="<%= customer.phone %>" required><br>
+    <input type="text" id="phone" name="phone" value="<%= customer.phone %>" required oninvalid="this.setCustomValidity('Chưa có')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
     <label for="address">Địa chỉ:</label>
-    <input type="text" id="address" name="address" value="<%= customer.address %>" required><br>
+    <input type="text" id="address" name="address" value="<%= customer.address %>" required oninvalid="this.setCustomValidity('Chưa có')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
-    <label for="totalPurchaseAmount">Tổng tiền hàng:</label>
-    <input type="number" id="totalPurchaseAmount" name="totalPurchaseAmount" value="<%= customer.totalPurchaseAmount %>" required><br>
 
-    <label for="totalDebt">Tổng nợ:</label>
-    <input type="number" id="totalDebt" name="totalDebt" value="<%= customer.totalDebt %>" required><br>
-
-    <button type="submit">Cập nhật thông tin</button>
+    <button type="submit">Lưu</button>
   </form>
 </body>
 </html>

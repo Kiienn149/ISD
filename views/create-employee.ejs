@@ -1,5 +1,3 @@
-<!-- File: views/create-employee.ejs -->
-
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -67,11 +65,14 @@
         </select>
       </div>
 
+      <!-- Trạng thái (Hoạt động / Tạm dừng) -->
       <div>
         <label for="isActive">Trạng thái:</label>
-        <input type="checkbox" id="isActive" name="isActive" <%= user.isActive ? 'checked' : '' %> >
+        <select id="isActive" name="isActive">
+          <option value="Hoạt động" <%= user.isActive === 'Hoạt động' ? 'selected' : '' %>>Hoạt động</option>
+          <option value="Tạm dừng" <%= user.isActive === 'Tạm dừng' ? 'selected' : '' %>>Tạm dừng</option>
+        </select>
       </div>
-      
 
       <button type="submit">Tạo nhân viên</button>
     </form>
