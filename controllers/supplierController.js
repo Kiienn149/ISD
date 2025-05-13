@@ -1,28 +1,46 @@
 const Supplier = require('../models/supplier');
 
 // Lấy danh sách nhà cung cấp
+// Lấy danh sách nhà cung cấp
 exports.getSupplierList = async (req, res) => {
   try {
     const suppliers = await Supplier.find();  
     let totalPurchaseAmount = 0;
     let totalDebt = 0;
 
+    // Tính tổng tiền hàng và tổng nợ của nhà cung cấp
     suppliers.forEach(supplier => {
       totalPurchaseAmount += supplier.totalPurchaseAmount || 0;
       totalDebt += supplier.totalDebt || 0;
     });
 
+    // Lấy danh sách khách hàng
+    const customers = await Customer.find();
+    let customerTotalPurchaseAmount = 0;
+    let customerTotalDebt = 0;
+
+    // Tính tổng tiền hàng và tổng nợ của khách hàng
+    customers.forEach(customer => {
+      customerTotalPurchaseAmount += customer.totalPurchaseAmount || 0;
+      customerTotalDebt += customer.totalDebt || 0;
+    });
+
+    // Truyền dữ liệu vào view
     res.render('customer/customer-list', { 
-      suppliers, 
-      totalPurchaseAmount,
-      totalDebt 
+      customers, // Truyền danh sách khách hàng
+      totalPurchaseAmount: customerTotalPurchaseAmount, // Tổng tiền hàng của khách hàng
+      totalDebt: customerTotalDebt, // Tổng nợ của khách hàng
+      suppliers, // Truyền danh sách nhà cung cấp
+      supplierTotalPurchaseAmount: totalPurchaseAmount, // Tổng tiền hàng của nhà cung cấp
+      supplierTotalDebt: totalDebt // Tổng nợ của nhà cung cấp
     });
   } catch (error) {
     console.log(error);
     req.flash('error', 'Không thể tải danh sách nhà cung cấp');
-    res.redirect('/home');
+    res.redirect('/customer');
   }
 };
+
 
 // Tạo nhà cung cấp mới
 exports.createSupplier = async (req, res) => {
@@ -33,13 +51,13 @@ exports.createSupplier = async (req, res) => {
     const existingSupplier = await Supplier.findOne({ supplierId });
     if (existingSupplier) {
       req.flash('error', 'Mã nhà cung cấp đã tồn tại, hãy chọn 1 ID khác.');
-      return res.redirect('/supplier');  // Redirect to the supplier page if the ID exists
+      return res.redirect('/customer');  // Redirect to the supplier page if the ID exists
     }
 
     // Kiểm tra tên nhà cung cấp không được bỏ trống
     if (!name) {
       req.flash('error', 'Vui lòng nhập tên nhà cung cấp');
-      return res.redirect('/supplier');  // Redirect to the supplier creation page
+      return res.redirect('/customer');  // Redirect to the supplier creation page
     }
 
     // Kiểm tra các trường khác và tự động điền "chưa có" nếu để trống
@@ -61,13 +79,43 @@ exports.createSupplier = async (req, res) => {
 
     await newSupplier.save();
     req.flash('success', 'Nhà cung cấp đã được thêm thành công');
-    res.redirect('/supplier');  // Redirect to the supplier page after creation
+
+    // Sau khi tạo nhà cung cấp thành công, lấy lại danh sách khách hàng và nhà cung cấp
+    const customers = await Customer.find();
+    const suppliers = await Supplier.find();
+    let totalPurchaseAmount = 0;
+    let totalDebt = 0;
+    
+    customers.forEach(customer => {
+      totalPurchaseAmount += customer.totalPurchaseAmount || 0;
+      totalDebt += customer.totalDebt || 0;
+    });
+
+    let supplierTotalPurchaseAmount = 0;
+    let supplierTotalDebt = 0;
+
+    suppliers.forEach(supplier => {
+      supplierTotalPurchaseAmount += supplier.totalPurchaseAmount || 0;
+      supplierTotalDebt += supplier.totalDebt || 0;
+    });
+
+    // Render lại view và truyền tất cả dữ liệu vào
+    res.render('customer/customer-list', { 
+      customers, 
+      totalPurchaseAmount,
+      totalDebt,
+      suppliers,
+      supplierTotalPurchaseAmount,
+      supplierTotalDebt
+    });
+
   } catch (error) {
     console.log(error);
-    req.flash('error', 'Đã có lỗi khi thêm nhà cung cấp');
-    res.redirect('/supplier');  // In case of error, redirect to the supplier page
+    req.flash('error', '');
+    res.redirect('/customer');  // In case of error, redirect to the supplier page
   }
 };
+
 
 
 // Chỉnh sửa thông tin nhà cung cấp

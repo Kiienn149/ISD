@@ -86,7 +86,8 @@
   <div id="suppliers-content" class="tab-content">
     <h2>Danh sách Nhà cung cấp</h2>
     <input type="text" class="search-bar" placeholder="Tìm kiếm nhà cung cấp..." />
-    <button class="btn" onclick="openSupplierModal()">Tạo nhà cung cấp</button>
+    <button class="btn" data-bs-toggle="modal" data-bs-target="#supplier-modal">Tạo nhà cung cấp</button>
+
 
     <% if (error_message) { %>
       <div class="alert alert-danger"><%= error_message %></div>
@@ -162,6 +163,29 @@
       </form>
     </div>
   </div>
+    <!-- MODAL Bootstrap: Tạo Nhà Cung Cấp -->
+  <div class="modal fade" id="supplier-modal" tabindex="-1" aria-labelledby="supplierModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <form action="/supplier/create" method="POST" class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="supplierModalLabel">Tạo mới Nhà cung cấp</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+        </div>
+        <div class="modal-body">
+          <input class="form-control mb-2" name="supplierId" placeholder="Mã nhà cung cấp" required>
+          <input class="form-control mb-2" name="name" placeholder="Tên nhà cung cấp" required>
+          <input class="form-control mb-2" name="phone" placeholder="Số điện thoại" required>
+          <input class="form-control mb-2" name="email" type="email" placeholder="Email" required>
+          <input class="form-control mb-2" name="address" placeholder="Địa chỉ" required>
+          <textarea class="form-control mb-2" name="note" placeholder="Ghi chú" required></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Lưu</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Bỏ qua</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script>
     document.getElementById('customers-tab').addEventListener('click', function() {
@@ -178,13 +202,7 @@
       document.getElementById('customers-content').classList.remove('active');
     });
 
-    function openSupplierModal() {
-      document.getElementById('supplier-modal').style.display = "block";
-    }
 
-    function closeModal(modalId) {
-      document.getElementById(modalId).style.display = "none";
-    }
   </script>
   <script>
   // Xác nhận xóa khách hàng
