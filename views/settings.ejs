@@ -39,7 +39,10 @@
             <td><%= user.name %></td>
             <td><%= user.email %></td>
             <td><%= user.role %></td>
-            <td><%= user.isActive ? 'Hoạt động' : 'Tạm ngừng' %></td>
+            <td>
+              <!-- Kiểm tra trạng thái hoạt động -->
+              <%= user.isActive === 'Hoạt động' ? 'Hoạt động' : 'Tạm dừng' %>
+            </td>
             <td>
               <a href="/settings/edit/<%= user._id %>">Sửa</a> | 
               <form action="/settings/delete/<%= user._id %>" method="POST" style="display:inline;" onsubmit="confirmDelete(event)">

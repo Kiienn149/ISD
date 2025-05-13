@@ -13,7 +13,7 @@
 
   <div class="topbar">
     <div>💼 QUẢN LÝ BÁN HÀNG VLXD</div>
-    <p>Xin chào, <%= user.name %> (<%= user.role %>)</p>
+    <p>Xin chào, <%= currentUser.name %> (<%= currentUser.role %>)</p>
   </div>
 
   <div class="dashboard">
@@ -40,10 +40,13 @@
 
       <div>
         <label for="isActive">Trạng thái:</label>
-        <input type="checkbox" id="isActive" name="isActive" <%= user.isActive ? 'checked' : '' %> >
+        <select id="isActive" name="isActive">
+          <option value="Hoạt động" <%= user.isActive === 'Hoạt động' ? 'selected' : '' %>>Hoạt động</option>
+          <option value="Tạm dừng" <%= user.isActive === 'Tạm dừng' ? 'selected' : '' %>>Tạm dừng</option>
+        </select>
       </div>
 
-      <button type="submit">Lưu thay đổi</button>
+      <button type="submit">Lưu</button>
     </form>
   </div>
 </body>

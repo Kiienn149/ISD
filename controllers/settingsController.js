@@ -12,22 +12,23 @@ exports.getEmployeeList = async (req, res) => {
   }
 };
 
-// Edit employee form
+// Chỉnh sửa thông tin nhân viên
 exports.editEmployeeForm = async (req, res) => {
-  const { id } = req.params;
+  const { id } = req.params;  // Lấy id của nhân viên muốn sửa
   try {
-    const user = await User.findById(id); // Fetch user details
+    const user = await User.findById(id);  // Tìm nhân viên theo id
     if (!user) {
       req.flash('error', 'Nhân viên không tồn tại');
       return res.redirect('/settings');
     }
-    res.render('edit-employee', { user, user: req.session.user }); // Pass user data to the edit form
+    res.render('edit-employee', { user, currentUser: req.session.user });  // Truyền thông tin nhân viên và thông tin người dùng hiện tại
   } catch (err) {
     console.error(err);
     req.flash('error', 'Không thể tải thông tin nhân viên');
     res.redirect('/settings');
   }
 };
+
 
 
 
@@ -93,8 +94,8 @@ exports.updateEmployee = async (req, res) => {
       return res.redirect('/settings');
     }
 
-    // Chuyển isActive từ 'on' thành true, các giá trị khác thành false
-    const isActiveBoolean = isActive === 'on'; // 'on' => true, bất kỳ giá trị nào khác => false
+    // Cập nhật trạng thái isActive từ dropdown
+    const updatedIsActive = isActive || user.isActive; // Sử dụng trạng thái cũ nếu không có thay đổi
 
     // Kiểm tra email có bị trùng lặp không
     const existingUser = await User.findOne({ email });
@@ -107,7 +108,7 @@ exports.updateEmployee = async (req, res) => {
     user.name = name || user.name;
     user.email = email || user.email;
     user.role = role || user.role;
-    user.isActive = isActiveBoolean !== undefined ? isActiveBoolean : user.isActive;
+    user.isActive = updatedIsActive;  // Cập nhật trạng thái hoạt động
 
     await user.save();
     req.flash('success', 'Thông tin nhân viên đã được cập nhật');
@@ -118,5 +119,3 @@ exports.updateEmployee = async (req, res) => {
     res.redirect(`/settings/edit/${id}`);
   }
 };
-
-
