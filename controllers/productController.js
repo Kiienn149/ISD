@@ -31,14 +31,9 @@ exports.showProductDetail = async (req, res) => {
 
 
 // Tạo sản phẩm mới
+// Tạo sản phẩm mới
 exports.createProduct = async (req, res) => {
-  const { name, sku, price, quantity, category, manufacturer, capital } = req.body; 
-
-  // Kiểm tra các trường thông tin cần thiết
-  if (!name || !sku || !category || !manufacturer) {
-    req.flash('error', 'Tên sản phẩm, mã sản phẩm, danh mục, và nhà sản xuất không được bỏ trống');
-    return res.redirect('/products/create');
-  }
+  const { name, sku, price, quantity, category, manufacturer, capital } = req.body;
 
   // Kiểm tra giá bán, giá vốn, và số lượng phải lớn hơn 0
   if (price <= 0 || capital <= 0 || quantity <= 0) {
@@ -69,13 +64,14 @@ exports.createProduct = async (req, res) => {
 
     await newProduct.save();
     req.flash('success', 'Tạo sản phẩm thành công');
-    res.redirect('/products');
+    res.redirect('/products');  // Redirect về trang danh sách sản phẩm
   } catch (err) {
     console.error('Lỗi khi tạo sản phẩm:', err);
     req.flash('error', 'Không thể tạo sản phẩm');
     res.redirect('/products/create');
   }
 };
+
 function generateUniqueSku() {
   return 'SKU-' + Math.random().toString(36).substr(10000, 100000);  // Tạo mã ngẫu nhiên (có thể thay đổi theo yêu cầu)
 }

@@ -7,16 +7,25 @@
 <body>
   <h1>Tạo sản phẩm mới</h1>
   <form action="/products/create" method="POST">
+    <% if (success_message) { %>
+      <div class="alert alert-success">
+        <%= success_message %>
+      </div>
+    <% } %>
+
     <% if (error_message) { %>
       <div class="alert alert-danger">
         <%= error_message %>
       </div>
     <% } %>
+    
     <label for="name">Tên sản phẩm:</label>
-    <input type="text" id="name" name="name" ><br><br>
+    <input type="text" id="name" name="name" required oninvalid="this.setCustomValidity('Tên sản phẩm, mã sản phẩm, danh mục, và nhà sản xuất không được bỏ trống')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
     <label for="sku">Mã sản phẩm:</label>
-    <input type="text" id="sku" name="sku" ><br><br>
+    <input type="text" id="sku" name="sku" required oninvalid="this.setCustomValidity('Tên sản phẩm, mã sản phẩm, danh mục, và nhà sản xuất không được bỏ trống')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
     <label for="price">Giá bán:</label>
     <input type="number" id="price" name="price"  required><br><br>
@@ -28,12 +37,14 @@
     <input type="number" id="quantity" name="quantity"  required><br><br>
 
     <label for="category">Danh mục:</label>
-    <input type="text" id="category" name="category" required><br><br>
+    <input type="text" id="category" name="category" required oninvalid="this.setCustomValidity('Tên sản phẩm, mã sản phẩm, danh mục, và nhà sản xuất không được bỏ trống')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
     <label for="manufacturer">Nhà sản xuất:</label>
-    <input type="text" id="manufacturer" name="manufacturer" required><br><br>
+    <input type="text" id="manufacturer" name="manufacturer" required oninvalid="this.setCustomValidity('Tên sản phẩm, mã sản phẩm, danh mục, và nhà sản xuất không được bỏ trống')"
+               oninput="this.setCustomValidity('')"/><br><br>
 
-    <button type="submit">Tạo sản phẩm</button>
+    <button type="submit">Lưu</button>
   </form>
 </body>
 </html>

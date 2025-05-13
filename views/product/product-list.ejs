@@ -1,123 +1,21 @@
 <!DOCTYPE html>
 <html lang="vi">
-<head>
-  <meta charset="UTF-8">
-  <title>Trang quản lý hệ thống</title>
-  <link rel="stylesheet" href="/css/style.css">
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: #f4f6f9;
-    }
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 200px;
-      height: 100vh;
-      background-color: #007bdb;
-      color: white;
-      padding-top: 20px;
-    }
-    .sidebar a {
-      display: block;
-      color: white;
-      padding: 12px 20px;
-      text-decoration: none;
-      font-weight: 500;
-    }
-    .sidebar a:hover {
-      background-color: #005fa3;
-    }
-    .topbar {
-      margin-left: 200px;
-      background-color: #007bdb;
-      color: white;
-      padding: 16px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .dashboard {
-      margin-left: 200px;
-      padding: 20px;
-    }
-    .card-group {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .card {
-      flex: 1;
-      min-width: 220px;
-      background-color: white;
-      border-radius: 8px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-      padding: 20px;
-      text-align: center;
-    }
-    .card h4 {
-      margin: 0 0 8px;
-    }
-    .section-title {
-      margin-top: 30px;
-      margin-bottom: 12px;
-      font-size: 18px;
-      font-weight: bold;
-    }
-    .stat-blocks {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .block {
-      flex: 1;
-      min-width: 200px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.1);
-    }
-  </style>
-</head>
-<body>
-  <div class="sidebar">
-    <a href="#">POS Bán Hàng</a>
-    <a href="#" id="home-link">Trang Chủ</a>
-    <a href="#" id="order-link">Tạo đơn hàng</a>
-    <a href="/products" data-link>Sản phẩm</a>
-    <a href="/customer" >Khách hàng</a>
-    <a href="#">Nhập kho</a>
-    <a href="/inventory" data-link>Tồn kho</a>
-    <a href="#">Doanh số</a>
-    <a href="#">Thu chi</a>
-    <a href="/profit" data-link>Lợi nhuận</a>
 
-    <% if (user.role === 'owner') { %>
-      <li><a href="/settings">⚙️ Thiết lập</a></li>
-    <% } %>
-  </div>
-
-  <div class="topbar">
-    <div><strong>💼 QUẢN LÝ BÁN HÀNG VLXD</strong></div>
-    <p style="margin-top: 30px; font-weight: 500; color: #e2e6ea;">
-      🔐 Bạn đang đăng nhập với quyền: <strong><%= user.role %></strong>
-    </p>
-    <div class="header-bar">
-      <div class="user-dropdown">
-        <span class="user-name">🔥 Xin chào, <b><%= user.name %></b> (<%= user.role %>) ▼</span>
-        <div class="dropdown-menu">
-          <a href="/account">Tài khoản</a>
-          <a href="/logout">Đăng xuất</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <div class="dashboard">
     <h1>Danh sách sản phẩm</h1>
+    <% if (success_message) { %>
+      <div class="alert alert-success">
+        <%= success_message %>
+      </div>
+    <% } %>
+
+    <!-- Hiển thị thông báo lỗi -->
+    <% if (error_message) { %>
+      <div class="alert alert-danger">
+        <%= error_message %>
+      </div>
+    <% } %>
     <form action="/products" method="GET">
       <input type="text" name="search" placeholder="Tìm kiếm sản phẩm...">
       <button type="submit">Tìm kiếm</button>
