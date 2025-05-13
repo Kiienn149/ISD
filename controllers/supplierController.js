@@ -78,7 +78,7 @@ exports.createSupplier = async (req, res) => {
     });
 
     await newSupplier.save();
-    req.flash('success', 'Nhà cung cấp đã được thêm thành công');
+    req.flash('success', 'Tạo nhà cung cấp thành công');
 
     // Sau khi tạo nhà cung cấp thành công, lấy lại danh sách khách hàng và nhà cung cấp
     const customers = await Customer.find();
@@ -111,7 +111,7 @@ exports.createSupplier = async (req, res) => {
 
   } catch (error) {
     console.log(error);
-    req.flash('error', '');
+    req.flash('error', 'Tạo nhà cung cấp thành công');
     res.redirect('/customer');  // In case of error, redirect to the supplier page
   }
 };

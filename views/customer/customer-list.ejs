@@ -172,12 +172,16 @@
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
         </div>
         <div class="modal-body">
-          <input class="form-control mb-2" name="supplierId" placeholder="Mã nhà cung cấp" required>
-          <input class="form-control mb-2" name="name" placeholder="Tên nhà cung cấp" required>
-          <input class="form-control mb-2" name="phone" placeholder="Số điện thoại" required>
-          <input class="form-control mb-2" name="email" type="email" placeholder="Email" required>
-          <input class="form-control mb-2" name="address" placeholder="Địa chỉ" required>
-          <textarea class="form-control mb-2" name="note" placeholder="Ghi chú" required></textarea>
+          <input class="form-control mb-2" name="supplierId" placeholder="Mã nhà cung cấp"  >
+          <input class="form-control mb-2" name="name" placeholder="Tên nhà cung cấp" required oninvalid="this.setCustomValidity('Vui lòng nhập tên nhà cung cấp')"
+               oninput="this.setCustomValidity('')"/>
+          <input class="form-control mb-2" name="phone" placeholder="Số điện thoại" required oninvalid="this.setCustomValidity('Chưa có')"
+               oninput="this.setCustomValidity('')"/>
+          <input class="form-control mb-2" name="email" type="email" placeholder="Email" required oninvalid="this.setCustomValidity('Chưa có')"
+               oninput="this.setCustomValidity('')"/>
+          <input class="form-control mb-2" name="address" placeholder="Địa chỉ" required oninvalid="this.setCustomValidity('Chưa có')"
+               oninput="this.setCustomValidity('')"/>
+          <textarea class="form-control mb-2" name="note" placeholder="Ghi chú" ></textarea>
         </div>
         <div class="modal-footer">
           <button type="submit" class="btn btn-success">Lưu</button>
